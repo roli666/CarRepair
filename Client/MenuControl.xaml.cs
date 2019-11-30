@@ -1,19 +1,6 @@
-﻿using Client.Interfaces;
-using log4net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using log4net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Client
 {
@@ -23,19 +10,19 @@ namespace Client
     public partial class MenuControl : UserControl
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        private IRepositoryController repo;
-        public MenuControl(IRepositoryController rc)
+        public MenuControl()
         {
             InitializeComponent();
-            repo = rc;
         }
         private void MechButton_Click(object sender, RoutedEventArgs e)
         {
+            log.Info($"Switching to view:{typeof(MechanicControl)}");
             ((MainWindow)Application.Current.MainWindow).ChangeToControl(typeof(MechanicControl));
         }
 
         private void AdminButton_Click(object sender, RoutedEventArgs e)
         {
+            log.Info($"Switching to view:{typeof(AdministratorControl)}");
             ((MainWindow)Application.Current.MainWindow).ChangeToControl(typeof(AdministratorControl));
         }
     }

@@ -12,7 +12,10 @@ namespace WebServer.Controllers
     {
         IRepository _jobRepo;
 
-        public JobsController() { }
+        public JobsController()
+        {
+
+        }
 
         public JobsController(IRepository repo)
         {

@@ -12,9 +12,9 @@ namespace WebServer.Interfaces
         IEnumerable<JobModel> GetAllJobs();
         JobModel GetJobByID(int id);
         IEnumerable<JobModel> FindJob(string searchString);
-        int AddJob(JobModel job);
-        bool UpdateJob(JobModel job);
-        bool DeleteJob(int id);
+        Task<int> AddJob(JobModel job);
+        Task<bool> UpdateJob(JobModel job);
+        Task<bool> DeleteJob(int id);
 
     }
 }

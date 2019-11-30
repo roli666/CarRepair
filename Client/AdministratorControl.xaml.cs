@@ -1,24 +1,13 @@
-﻿using Client.Business_Logic;
-using Client.Interfaces;
+﻿using Client.Interfaces;
 using Client.Models;
 using log4net;
 using SharedKernel.Enums;
 using SharedKernel.Models;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Client
 {
@@ -28,12 +17,13 @@ namespace Client
     public partial class AdministratorControl : UserControl
     {
         private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        IRepositoryController repo;
+        readonly IRepositoryController repo;
 
         public AdministratorControl(IRepositoryController rc)
         {
             InitializeComponent();
             repo = rc;
+            repo.RepositoryChangedEvent += RefreshDataGrid;
             Dispatcher.Invoke(async () => ExistingJobs.ItemsSource = await repo.GetAllJobs());
         }
 
@@ -72,12 +62,22 @@ namespace Client
 
         private async void ExistingJobs_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
-            var ret = await repo.UpdateJob(JobViewModel.ToJobModel((JobViewModel)e.Row.Item));
+            await repo.UpdateJob(JobViewModel.ToJobModel((JobViewModel)e.Row.Item));
+        }
+
+        private async Task RefreshDataGrid()
+        {
+            await Dispatcher.InvokeAsync(async () => ExistingJobs.ItemsSource = await repo.GetAllJobs());
         }
 
         private async void RefreshDataGrid(object sender, RoutedEventArgs e)
         {
-            ExistingJobs.ItemsSource = await repo.GetAllJobs();
+            await RefreshDataGrid();
+        }
+
+        private async void RefreshDataGrid(object sender, EventArgs e)
+        {
+            await RefreshDataGrid();
         }
 
         private void ExistingJobs_PreviewCanExecute(object sender, CanExecuteRoutedEventArgs e)

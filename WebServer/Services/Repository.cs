@@ -1,8 +1,10 @@
 ﻿using LiteDB;
+using Microsoft.AspNet.SignalR;
 using SharedKernel.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using WebServer.Interfaces;
 
@@ -10,23 +12,28 @@ namespace WebServer.Services
 {
     public class Repository : IRepository
     {
-        LiteDatabase _db;
-
+        readonly LiteDatabase _db;
+        readonly IHubContext<IRepositoryHub> hub;
         public Repository(string connectionString)
         {
             _db = new LiteDatabase(connectionString);
+            hub = GlobalHost.ConnectionManager.GetHubContext<RepositoryHub, IRepositoryHub>();
         }
 
-        public int AddJob(JobModel job)
+        public async Task<int> AddJob(JobModel job)
         {
             var col = _db.GetCollection<JobModel>();
-            return col.Insert(job);
+            var retValue = col.Insert(job);
+            await hub.Clients.All.RepositoryChanged();
+            return retValue;
         }
 
-        public bool UpdateJob(JobModel job)
+        public async Task<bool> UpdateJob(JobModel job)
         {
             var col = _db.GetCollection<JobModel>();
-            return col.Update(job);
+            var retValue = col.Update(job);
+            await hub.Clients.All.RepositoryChanged();
+            return retValue;
         }
 
         public IEnumerable<JobModel> GetAllJobs()
@@ -49,10 +56,12 @@ namespace WebServer.Services
             );
         }
 
-        public bool DeleteJob(int id)
+        public async Task<bool> DeleteJob(int id)
         {
             var col = _db.GetCollection<JobModel>();
-            return col.Delete(id);
+            var retValue = col.Delete(id);
+            await hub.Clients.All.RepositoryChanged();
+            return retValue;
         }
     }
 }
