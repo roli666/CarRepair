@@ -1,5 +1,5 @@
 export class ErrorHandler {
-    public showError(status: number){
-
+    public static showError(status: number){
+        
     }
 }

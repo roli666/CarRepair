@@ -1,27 +1,28 @@
 import React from 'react';
-import logo from './static/img/logo.svg';
 import './static/css/App.css';
-import { Weather } from "./WeatherComponent"
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { Footer } from "./Footer"
+import { Header } from "./Header"
+import { Home } from "./Home"
+import { Weather } from './WeatherComponent';
+import { Container } from '@material-ui/core';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <Weather />
-      </header>
-    </div>
+    <BrowserRouter>
+      <Header />
+      <Container>
+        <Switch>
+          <Route exact path="/">
+            <Home />
+          </Route>
+          <Route path="/weather">
+            <Weather />
+          </Route>
+        </Switch>
+      </Container>
+      <Footer />
+    </BrowserRouter>
   );
 }
 

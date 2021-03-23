@@ -1,5 +1,5 @@
 {
     "APIHostname": "localhost",
     "APIProtocol": "https",
-    "APIPort": 55002
+    "APIPort": 55000
 }
