@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  carrepair.api:
+    image: ${DOCKER_REGISTRY-}carrepairapi
+    build:
+      context: .
+      dockerfile: CarRepair.API/Dockerfile

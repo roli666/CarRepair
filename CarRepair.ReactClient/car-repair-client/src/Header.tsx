@@ -1,18 +1,7 @@
 import { AppBar, Container, IconButton, List, ListItem, ListItemText, makeStyles, Toolbar } from '@material-ui/core';
 import { Home } from '@material-ui/icons';
-import React from 'react';
 import { Link } from "react-router-dom";
-
-const navLinks = [
-    {
-        title: "Home",
-        path: "/"
-    },
-    {
-        title: "WeatherForecast",
-        path: "/weather"
-    }
-]
+import { Routes } from "./RouteData";
 
 const useStyles = makeStyles({
     navDisplayFlex: {
@@ -42,10 +31,10 @@ export function Header() {
                         </Link>
                     </IconButton>
                     <List component="nav" className={classes.navDisplayFlex} aria-labelledby="main navigation">
-                        {navLinks.map(({ title, path }) => (
-                            <Link to={path} key={path} className={classes.linkText}>
+                        {Array.from(Routes.values()).map((value,index) => (
+                            <Link to={value.Path} key={index} className={classes.linkText}>
                                 <ListItem button>
-                                    <ListItemText primary={title} />
+                                    <ListItemText primary={value.Title} />
                                 </ListItem>
                             </Link>
                         ))}

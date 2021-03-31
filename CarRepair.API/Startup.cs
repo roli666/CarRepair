@@ -21,7 +21,7 @@ namespace CarRepair.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CarRepairContext>(opts=> opts.UseSqlServer(Configuration.GetConnectionString("CarRepairDB")));
+            services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("CarRepairDB")));
 
             services.AddControllers().AddJsonOptions(options =>
             {
@@ -31,13 +31,25 @@ namespace CarRepair.API
 
             services.AddDefaultIdentity<CarRepairUser>().AddEntityFrameworkStores<CarRepairContext>();
 
-            services.AddIdentityServer().AddApiAuthorization<CarRepairUser, CarRepairContext>();
+            services.AddIdentityServer().AddApiAuthorization<CarRepairUser, CarRepairContext>()
+                .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"));
 
-            services.AddAuthentication().AddIdentityServerJwt();
+            services.AddAuthentication().AddIdentityServerJwt().AddJwtBearer("Bearer", options =>
+            {
+                // URL of our identity server
+                options.Authority = "https://localhost:5001";
+                // HTTPS required for the authority (defaults to true but disabled for development).
+                options.RequireHttpsMetadata = false;
+                // the name of this API - note: matches the API resource name configured above
+                options.Audience = "api";
+            });
 
             services.AddCors(options =>
                 {
-                    options.AddPolicy("localhostPolicy", builder => builder.WithOrigins("http://localhost:3000", "https://localhost:3000"));
+                    options.AddPolicy("localhostPolicy", builder =>
+                        builder.WithOrigins("http://localhost:3000", "https://localhost:3000")
+                               .AllowCredentials()
+                    );
                 }
             );
         }
@@ -56,12 +68,12 @@ namespace CarRepair.API
             app.UseCors("localhostPolicy");
 
             app.UseAuthentication();
-            app.UseAuthorization();
             app.UseIdentityServer();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers().RequireAuthorization();
+            {   //TODO: add require auth
+                endpoints.MapControllers();
             });
         }
     }

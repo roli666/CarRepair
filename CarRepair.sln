@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarRepair.API", "CarRepair.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarRepair.Data", "CarRepair.Data\CarRepair.Data.csproj", "{E2F0D1E6-C497-47A7-A7BB-2BF9A0931100}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRepair.Core", "CarRepair.Core\CarRepair.Core.csproj", "{1A351205-D938-404D-87E1-2AAF9A424BDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarRepair.Core", "CarRepair.Core\CarRepair.Core.csproj", "{1A351205-D938-404D-87E1-2AAF9A424BDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRepair.API.Test", "CarRepair.API.Test\CarRepair.API.Test.csproj", "{0FA5891A-8FC4-4EAF-953B-C6FF40FD3B5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarRepair.API.Test", "CarRepair.API.Test\CarRepair.API.Test.csproj", "{0FA5891A-8FC4-4EAF-953B-C6FF40FD3B5D}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{FD07E22A-ECB5-4B56-999F-C68A011D845E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{0FA5891A-8FC4-4EAF-953B-C6FF40FD3B5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FA5891A-8FC4-4EAF-953B-C6FF40FD3B5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FA5891A-8FC4-4EAF-953B-C6FF40FD3B5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD07E22A-ECB5-4B56-999F-C68A011D845E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD07E22A-ECB5-4B56-999F-C68A011D845E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD07E22A-ECB5-4B56-999F-C68A011D845E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD07E22A-ECB5-4B56-999F-C68A011D845E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
