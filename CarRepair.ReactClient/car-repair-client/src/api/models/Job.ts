@@ -1,16 +1,15 @@
 import { Car } from "./Car";
 
 export interface Job {
-    Id: number,
+    Id?: number,
     Car: Car,
     Registered: Date,
-    Started: Date | undefined,
-    Finished: Date | undefined,
+    Started?: Date,
+    Finished?: Date,
     Status: JobStatus
 }
 export enum JobStatus {
     Awaiting,
-    Started,
     InProgress,
     Done
 }

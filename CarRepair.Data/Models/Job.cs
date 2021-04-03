@@ -19,7 +19,6 @@ namespace CarRepair.Data.Models
     public enum JobStatus
     {
         Awaiting,
-        Started,
         InProgress,
         Done
     }

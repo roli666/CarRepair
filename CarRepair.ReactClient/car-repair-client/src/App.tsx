@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { Home } from "./Home"
-import { Weather } from './WeatherComponent';
+import { Admin } from './Admin';
 import { Container } from '@material-ui/core';
 import { Routes } from 'RouteData';
 
@@ -33,7 +33,7 @@ function App() {
             <Home />
           </Route>
           <Route path={Routes.get("admin")?.Path}>
-            <Weather />
+            <Admin />
           </Route>
         </Switch>
       </Container>

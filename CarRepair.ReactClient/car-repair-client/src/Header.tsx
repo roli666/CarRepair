@@ -5,17 +5,17 @@ import { Routes } from "./RouteData";
 
 const useStyles = makeStyles({
     navDisplayFlex: {
-        display: `flex`,
-        justifyContent: `space-between`
+        display: "flex",
+        justifyContent: "space-between"
     },
     navbarDisplayFlex: {
-        display: `flex`,
-        justifyContent: `space-between`
+        display: "flex",
+        justifyContent: "space-between"
     },
     linkText: {
-        textDecoration: `none`,
-        textTransform: `uppercase`,
-        color: `white`
+        textDecoration: "none",
+        textTransform: "uppercase",
+        color: "white"
     }
 });
 
@@ -27,7 +27,7 @@ export function Header() {
                 <Container className={classes.navbarDisplayFlex}>
                     <IconButton edge="start" color="inherit" aria-label="home">
                         <Link to="/">
-                            <Home fontSize="large" />
+                            <Home fontSize="large" className={classes.linkText} />
                         </Link>
                     </IconButton>
                     <List component="nav" className={classes.navDisplayFlex} aria-labelledby="main navigation">

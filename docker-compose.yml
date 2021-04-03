@@ -6,3 +6,21 @@ services:
     build:
       context: .
       dockerfile: CarRepair.API/Dockerfile
+    networks:
+     - car-repair
+    environment:
+     - DB_CONNECTION_STRING=Server=db,1433;Database=master;User=sa;Password=Ch4ng3Me!;
+    depends_on:
+    - db
+  db:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+        SA_PASSWORD: Ch4ng3Me!
+        ACCEPT_EULA: "Y"
+    ports:
+     - 1433:1433
+    networks:
+     - car-repair
+networks:
+  car-repair:
+    driver: bridge

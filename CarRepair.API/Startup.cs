@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 
 namespace CarRepair.API
 {
@@ -21,7 +22,12 @@ namespace CarRepair.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("CarRepairDB")));
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+
+            if (string.IsNullOrEmpty(connectionString))
+                services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("MigrationConnection")));
+            else
+                services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(connectionString));
 
             services.AddControllers().AddJsonOptions(options =>
             {
