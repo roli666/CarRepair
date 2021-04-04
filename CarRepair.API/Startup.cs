@@ -1,8 +1,10 @@
+using CarRepair.API.Hubs;
 using CarRepair.Data;
 using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,6 +60,8 @@ namespace CarRepair.API
                     );
                 }
             );
+
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -80,6 +84,10 @@ namespace CarRepair.API
             app.UseEndpoints(endpoints =>
             {   //TODO: add require auth
                 endpoints.MapControllers();
+                endpoints.MapHub<StatusHub>("/status", options =>
+                {
+                    options.Transports = HttpTransportType.WebSockets;
+                });
             });
         }
     }

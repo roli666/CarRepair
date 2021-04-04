@@ -1,7 +1,7 @@
 import { IconButton, Input, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import { JobService } from "./api/JobService";
+import { JobService } from "./services/JobService";
 import { Job, JobStatus } from "./api/models/Job";
 
 class JobGridProps {
@@ -91,7 +91,11 @@ function JobGridBody(props: JobGridBodyProps) {
                     </IconButton>
                 </TableCell>
                 <TableCell align="right">
-                    <Input type={"text"}></Input>
+                    <Select value={newJobStatus} onChange={(event) => setNewJobStatus(event.target.value as number)}>
+                        <MenuItem selected={true} value={JobStatus.Awaiting}>{JobStatus[JobStatus.Awaiting]}</MenuItem>
+                        <MenuItem value={JobStatus.InProgress}>{JobStatus[JobStatus.InProgress]}</MenuItem>
+                        <MenuItem value={JobStatus.Done}>{JobStatus[JobStatus.Done]}</MenuItem>
+                    </Select>
                 </TableCell>
                 <TableCell align="right">
                     <Input type={"date"}></Input>

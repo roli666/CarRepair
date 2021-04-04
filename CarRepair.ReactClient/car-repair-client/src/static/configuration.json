@@ -1,5 +1,6 @@
 {
     "APIHostname": "localhost",
     "APIProtocol": "https",
-    "APIPort": 55001
+    "APIPort": 55001,
+    "WebSocketLogLevel": 1
 }

@@ -1,4 +1,5 @@
 import { makeStyles, Paper, Typography } from "@material-ui/core";
+import { Status } from "./Status"
 import React from "react";
 
 const useStyles = makeStyles({
@@ -20,6 +21,7 @@ export function Footer() {
                 <Typography component="p">
                     @2018 All right reserved
                 </Typography>
+                <Status showTooltip={true}></Status>
             </Paper>
         </footer>
     )

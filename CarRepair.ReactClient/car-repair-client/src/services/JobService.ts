@@ -1,5 +1,5 @@
-import { ApiFetcher } from "./ApiFetcher"
-import { Job } from "./models/Job"
+import { ApiFetcher } from "../api/ApiFetcher"
+import { Job } from "../api/models/Job"
 
 export class JobService {
     public static async getAvailableJobs(){

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { WeatherService } from './api/WeatherService';
 import { JobGrid } from 'JobGrid';
 
 export function Admin() {
