@@ -1,13 +1,9 @@
 ﻿using CarRepair.Data;
+using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CarRepair.API.Controllers
 {
@@ -24,47 +20,77 @@ namespace CarRepair.API.Controllers
             _db = db;
         }
 
-        // GET: api/<CarController>
+        // GET: <CarController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             using (_db)
             {
-                _logger.LogDebug("Sending clients for user:{0}", User);
+                _logger.LogDebug("Sending cars for user:{0}", User);
                 return Ok(await _db.Cars.ToListAsync());
             }
         }
 
-        // GET api/<CarController>/5
+        // GET <CarController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             using (_db)
             {
-                _logger.LogDebug("Sending client:{1} for user:{0}", User, id);
-                return Ok(await _db.Cars.FirstOrDefaultAsync(car => car.Id == id));
+                _logger.LogDebug("Sending car:{1} for user:{0}", User, id);
+                return Ok(await _db.Cars.FindAsync(id));
             }
         }
 
-        // POST api/<CarController>
+        // POST <CarController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] Car value)
         {
-            return Ok();
+            using (_db)
+            {
+                _logger.LogDebug("Inserting car:{1} for user:{0}", User, value.LicencePlate);
+
+                await _db.Cars.AddAsync(value);
+                await _db.SaveChangesAsync();
+
+                return Ok(value);
+            }
         }
 
-        // PUT api/<CarController>/5
+        // PUT <CarController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] Car value)
         {
-            return Ok();
+            using (_db)
+            {
+                _logger.LogDebug("Updating car:{1} for user:{0}", User, id);
+                var car = await _db.Cars.FindAsync(id);
+
+                if (car == null)
+                {
+                    _logger.LogDebug("Car:{1} not found for user:{0}. Redirecting to post.", User, id);
+                    RedirectToAction("Post");
+                }
+
+                var carToUpdate = _db.Cars.Attach(car);
+                carToUpdate.CurrentValues.SetValues(value);
+                await _db.SaveChangesAsync();
+
+                return Ok(value);
+            }
         }
 
-        // DELETE api/<CarController>/5
+        // DELETE <CarController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return Ok();
+            using (_db)
+            {
+                _logger.LogDebug("Deleting car:{1} for user:{0}", User, id);
+                var carToDelete = await _db.Cars.FindAsync(id);
+                _db.Cars.Remove(carToDelete);
+                return Ok(await _db.SaveChangesAsync());
+            }
         }
     }
 }

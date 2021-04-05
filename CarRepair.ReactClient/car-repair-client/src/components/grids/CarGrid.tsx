@@ -1,8 +1,8 @@
 import { IconButton, Input, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import React, { useEffect, useState } from "react";
-import { Car } from "./api/models/Car";
-import { CarService } from "./services/CarService";
+import { useEffect, useState } from "react";
+import { Car } from "../../api/models/Car";
+import { CarService } from "../../services/CarService";
 
 class CarGridProps {
     readOnly?: boolean = false
@@ -24,7 +24,7 @@ const emptyCar: Car = {
 async function Initialize(): Promise<Car[]> {
     const result = await CarService.getAvailableCars()
     if (result?.length === 0)
-        console.log("no available jobs")
+        console.log("no available cars")
     return result ?? []
 }
 

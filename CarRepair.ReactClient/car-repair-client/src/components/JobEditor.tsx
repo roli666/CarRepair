@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { JobGrid } from 'JobGrid';
+import { JobGrid } from './grids/JobGrid';
 
-export function Admin() {
+export function JobEditor() {
 
     //initialization
     useEffect(() => {
@@ -12,7 +12,7 @@ export function Admin() {
 
     return (
         <div>
-            <h1>Administration</h1>
+            <h1>Job Editor</h1>
             <JobGrid></JobGrid>
         </div>
     );

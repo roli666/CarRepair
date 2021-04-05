@@ -7,10 +7,11 @@ namespace CarRepair.Data.Models
     {
         public int Id { get; set; }
         [Required]
+        [MaxLength(256)]
+        public string Firstname { get; set; }
+        [Required]
+        [MaxLength(256)]
+        public string Lastname { get; set; }
         public ContactInfo ContactInfo { get; set; }
-        [MaxLength(256)]
-        public string FirstName { get; set; }
-        [MaxLength(256)]
-        public string LastName { get; set; }
     }
 }

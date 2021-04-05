@@ -3,7 +3,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Footer } from "./Footer"
 import { Header } from "./Header"
 import { Home } from "./Home"
-import { Admin } from './Admin';
+import { JobEditor } from './components/JobEditor';
+import { ClientEditor } from './components/ClientEditor';
+import { CarEditor } from './components/CarEditor';
 import { Container } from '@material-ui/core';
 import { Routes } from 'RouteData';
 
@@ -32,8 +34,14 @@ function App() {
           <Route exact path={Routes.get("home")?.Path}>
             <Home />
           </Route>
-          <Route path={Routes.get("admin")?.Path}>
-            <Admin />
+          <Route path={Routes.get("jobEditor")?.Path}>
+            <JobEditor />
+          </Route>
+          <Route path={Routes.get("carEditor")?.Path}>
+            <CarEditor />
+          </Route>
+          <Route path={Routes.get("clientEditor")?.Path}>
+            <ClientEditor />
           </Route>
         </Switch>
       </Container>

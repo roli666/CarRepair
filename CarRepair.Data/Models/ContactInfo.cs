@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Text.Json.Serialization;
 
 namespace CarRepair.Data.Models
 {
@@ -9,8 +8,11 @@ namespace CarRepair.Data.Models
     {
         [Key]
         [MaxLength(256)]
+        [EmailAddress]
         public string Email { get; set; }
+        [JsonIgnore]
         public int ClientId { get; set; }
+        [JsonIgnore]
         public Client Client { get; set; }
         public IEnumerable<PhoneContact> PhoneContact { get; set; }
     }

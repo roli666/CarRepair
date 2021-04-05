@@ -1,4 +1,8 @@
 export interface ContactInfo {
     Email: string,
-    PhoneContact: string[]
+    PhoneContact: PhoneContact[]
+}
+
+export interface PhoneContact {
+    PhoneNumber: string
 }

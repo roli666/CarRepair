@@ -1,8 +1,8 @@
 import { IconButton, Input, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
-import React, { useEffect, useState } from "react";
-import { JobService } from "./services/JobService";
-import { Job, JobStatus } from "./api/models/Job";
+import { useEffect, useState } from "react";
+import { JobService } from "../../services/JobService";
+import { Job, JobStatus } from "../../api/models/Job";
 
 class JobGridProps {
     readOnly?: boolean = false
@@ -84,36 +84,38 @@ function JobGridBody(props: JobGridBodyProps) {
                     <TableCell align="right">{JobStatus[row.Status]}</TableCell>
                 </TableRow>
             ))}
-            <TableRow>
-                <TableCell align="right">
-                    <IconButton color="primary" aria-label="Add new job">
-                        <Add></Add>
-                    </IconButton>
-                </TableCell>
-                <TableCell align="right">
-                    <Select value={newJobStatus} onChange={(event) => setNewJobStatus(event.target.value as number)}>
-                        <MenuItem selected={true} value={JobStatus.Awaiting}>{JobStatus[JobStatus.Awaiting]}</MenuItem>
-                        <MenuItem value={JobStatus.InProgress}>{JobStatus[JobStatus.InProgress]}</MenuItem>
-                        <MenuItem value={JobStatus.Done}>{JobStatus[JobStatus.Done]}</MenuItem>
-                    </Select>
-                </TableCell>
-                <TableCell align="right">
-                    <Input type={"date"}></Input>
-                </TableCell>
-                <TableCell align="right">
-                    <Input type={"date"}></Input>
-                </TableCell>
-                <TableCell align="right">
-                    <Input type={"date"}></Input>
-                </TableCell>
-                <TableCell align="right">
-                    <Select value={newJobStatus} onChange={(event) => setNewJobStatus(event.target.value as number)}>
-                        <MenuItem selected={true} value={JobStatus.Awaiting}>{JobStatus[JobStatus.Awaiting]}</MenuItem>
-                        <MenuItem value={JobStatus.InProgress}>{JobStatus[JobStatus.InProgress]}</MenuItem>
-                        <MenuItem value={JobStatus.Done}>{JobStatus[JobStatus.Done]}</MenuItem>
-                    </Select>
-                </TableCell>
-            </TableRow>
+            {!props.readonly &&
+                <TableRow>
+                    <TableCell align="right">
+                        <IconButton color="primary" aria-label="Add new job">
+                            <Add></Add>
+                        </IconButton>
+                    </TableCell>
+                    <TableCell align="right">
+                        <Select value={newJobStatus} onChange={(event) => setNewJobStatus(event.target.value as number)}>
+                            <MenuItem selected={true} value={JobStatus.Awaiting}>{JobStatus[JobStatus.Awaiting]}</MenuItem>
+                            <MenuItem value={JobStatus.InProgress}>{JobStatus[JobStatus.InProgress]}</MenuItem>
+                            <MenuItem value={JobStatus.Done}>{JobStatus[JobStatus.Done]}</MenuItem>
+                        </Select>
+                    </TableCell>
+                    <TableCell align="right">
+                        <Input type={"date"}></Input>
+                    </TableCell>
+                    <TableCell align="right">
+                        <Input type={"date"}></Input>
+                    </TableCell>
+                    <TableCell align="right">
+                        <Input type={"date"}></Input>
+                    </TableCell>
+                    <TableCell align="right">
+                        <Select value={newJobStatus} onChange={(event) => setNewJobStatus(event.target.value as number)}>
+                            <MenuItem selected={true} value={JobStatus.Awaiting}>{JobStatus[JobStatus.Awaiting]}</MenuItem>
+                            <MenuItem value={JobStatus.InProgress}>{JobStatus[JobStatus.InProgress]}</MenuItem>
+                            <MenuItem value={JobStatus.Done}>{JobStatus[JobStatus.Done]}</MenuItem>
+                        </Select>
+                    </TableCell>
+                </TableRow>
+            }
         </TableBody>
     )
 }

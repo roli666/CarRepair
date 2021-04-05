@@ -57,6 +57,8 @@ namespace CarRepair.API
                     options.AddPolicy("localhostPolicy", builder =>
                         builder.WithOrigins("http://localhost:3000", "https://localhost:3000")
                                .AllowCredentials()
+                               .AllowAnyHeader()
+                               .AllowAnyMethod()
                     );
                 }
             );

@@ -1,27 +1,20 @@
-import { makeStyles, Paper, Typography } from "@material-ui/core";
-import { Status } from "./Status"
-import React from "react";
-
-const useStyles = makeStyles({
-    footer: {
-        backgroundColor: "black",
-        marginTop: "16px",
-        padding: "16px 0",
-    }
-});
+import { Paper, Typography } from "@material-ui/core";
+import { Status } from "./components/Status"
 
 export function Footer() {
-    const classes = useStyles();
+
     return (
-        <footer className={classes.footer}>
+        <footer>
             <Paper elevation={0}>
                 <Typography variant="h5" component="h3">
-                    React App with Material UI
+                    React App with Material UI Footer
                 </Typography>
                 <Typography component="p">
-                    @2018 All right reserved
+                    @{new Date().getFullYear()} All right reserved
                 </Typography>
-                <Status showTooltip={true}></Status>
+                <Typography>
+                    Server status: <Status showTooltip={true}></Status>
+                </Typography>
             </Paper>
         </footer>
     )

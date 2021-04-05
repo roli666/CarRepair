@@ -20,7 +20,7 @@ namespace CarRepair.API.Controllers
             _db = db;
         }
 
-        // GET: api/<JobController>
+        // GET: <JobController>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -31,7 +31,7 @@ namespace CarRepair.API.Controllers
             }
         }
 
-        // GET api/<JobController>/5
+        // GET <JobController>/5
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -41,34 +41,54 @@ namespace CarRepair.API.Controllers
             }
         }
 
-        // POST api/<JobController>
+        // POST <JobController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Job job)
+        public async Task<IActionResult> Post([FromBody] Job value)
         {
             using (_db)
             {
-                await _db.Jobs.AddAsync(job);
-                var rows = await _db.SaveChangesAsync();
-                return Ok();
+                _logger.LogDebug("Inserting job:{1} for user:{0}", User, $"{value.Registered}");
+
+                await _db.Jobs.AddAsync(value);
+                await _db.SaveChangesAsync();
+
+                return Ok(value);
             }
         }
 
-        // PUT api/<JobController>/5
+        // PUT <JobController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] Job value)
         {
-            return Ok();
+            using (_db)
+            {
+                _logger.LogDebug("Updating job:{1} for user:{0}", User, id);
+
+                var job = await _db.Jobs.FindAsync(id);
+                if (job == null)
+                {
+                    _logger.LogDebug("Job:{1} not found for user:{0}. Redirecting to post.", User, id);
+                    RedirectToAction("Post");
+                }
+
+                var jobToUpdate = _db.Jobs.Attach(job);
+                jobToUpdate.CurrentValues.SetValues(value);
+                await _db.SaveChangesAsync();
+
+                return Ok(value);
+            }
         }
 
-        // DELETE api/<JobController>/5
+        // DELETE <JobController>/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             using (_db)
             {
-                var job = await _db.Jobs.FindAsync(id);
-                _db.Jobs.Remove(job);
-                return Ok();
+                _logger.LogDebug("Deleting job:{1} for user:{0}", User, id);
+                var jobToDelete = await _db.Jobs.FindAsync(id);
+                _db.Jobs.Remove(jobToDelete);
+                return Ok(await _db.SaveChangesAsync());
             }
         }
     }

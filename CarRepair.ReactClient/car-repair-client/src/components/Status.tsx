@@ -2,10 +2,17 @@ import { Tooltip } from "@material-ui/core";
 import { Cancel, CheckCircle } from "@material-ui/icons";
 import { HubConnectionBuilder, LogLevel, HttpTransportType, HubConnection, HubConnectionState } from "@microsoft/signalr"
 import { useCallback, useEffect, useState } from "react";
-import configuration from "./static/configuration.json"
+import configuration from "../static/configuration.json"
 
 interface StatusProps {
     showTooltip?: boolean
+}
+
+const getStatusTooltipText = (running: boolean) => {
+    if (!running)
+        return "No API connection"
+    else
+        return "API is running"
 }
 
 export function Status(props: StatusProps) {
@@ -25,9 +32,12 @@ export function Status(props: StatusProps) {
         } catch (error) {
             setTimeout(() => configSocket(), 5000);
         }
-        socketConnection.onclose(() => setStatus(false))
+        socketConnection.onclose(() => {
+            setStatus(false)
+            configSocket();
+        })
         setConnection(socketConnection);
-    },[]);
+    }, []);
 
     useEffect(() => {
         configSocket()
@@ -42,7 +52,7 @@ export function Status(props: StatusProps) {
 
     return (
         props.showTooltip ?
-            <Tooltip title={"Server status"} placement={"top"}>
+            <Tooltip title={getStatusTooltipText(status)} placement={"top"}>
                 {status ?
                     <CheckCircle color={"primary"}></CheckCircle>
                     : <Cancel color={"error"}></Cancel>

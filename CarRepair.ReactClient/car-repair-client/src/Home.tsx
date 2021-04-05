@@ -1,5 +1,4 @@
-import React from "react";
-import { JobGrid } from "./JobGrid"
+import { JobGrid } from "components/grids/JobGrid";
 
 export function Home() {
     return (
