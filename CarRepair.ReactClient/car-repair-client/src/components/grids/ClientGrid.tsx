@@ -1,8 +1,10 @@
 import { IconButton, Input, List, ListItem, ListItemSecondaryAction, ListItemText, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 import { Add, Cancel } from "@material-ui/icons";
+import { ValidationError } from "api/models/ValidationError";
 import { useEffect, useState } from "react";
 import { Client } from "../../api/models/Client";
 import { ClientService } from "../../services/ClientService";
+import { ValidationErrorElement } from "../ErrorHandler"
 
 class ClientGridProps {
     readOnly?: boolean = false
@@ -17,6 +19,7 @@ async function Initialize(): Promise<Client[]> {
 
 export function ClientGrid(props: ClientGridProps) {
     const [clients, setClients] = useState<Client[]>([])
+    const [validationError, setValidationError] = useState<ValidationError>(new ValidationError())
 
     useEffect(() => {
         (async () => {
@@ -29,6 +32,10 @@ export function ClientGrid(props: ClientGridProps) {
         if (result.ok) {
             const insertedClient = await result.json() as Client
             setClients([...clients, insertedClient])
+        }
+        if (result.status === 400) {
+            const validationResult = await result.json()
+            setValidationError(Object.assign(new ValidationError(), validationResult))
         }
     }
 
@@ -43,14 +50,17 @@ export function ClientGrid(props: ClientGridProps) {
     }
 
     return (
-        <Table>
-            <ClientGridHead />
-            <ClientGridBody
-                readonly={props.readOnly ?? false}
-                data={clients}
-                newClientCallback={addClient}
-                deleteClientCallback={deleteClient} />
-        </Table>
+        <>
+            <ValidationErrorElement error={validationError} />
+            <Table>
+                <ClientGridHead />
+                <ClientGridBody
+                    readonly={props.readOnly ?? false}
+                    data={clients}
+                    newClientCallback={addClient}
+                    deleteClientCallback={deleteClient} />
+            </Table>
+        </>
     )
 }
 

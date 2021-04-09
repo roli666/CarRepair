@@ -1,4 +1,3 @@
-import './static/css/App.css';
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Footer } from "./Footer"
 import { Header } from "./Header"
@@ -6,8 +5,9 @@ import { Home } from "./Home"
 import { JobEditor } from './components/JobEditor';
 import { ClientEditor } from './components/ClientEditor';
 import { CarEditor } from './components/CarEditor';
-import { Container } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import { Routes } from 'RouteData';
+import React from "react";
 
 //import configuration from './static/configuration.json'
 
@@ -28,24 +28,32 @@ import { Routes } from 'RouteData';
 function App() {
   return (
     <BrowserRouter>
-      <Header />
-      <Container>
-        <Switch>
-          <Route exact path={Routes.get("home")?.Path}>
-            <Home />
-          </Route>
-          <Route path={Routes.get("jobEditor")?.Path}>
-            <JobEditor />
-          </Route>
-          <Route path={Routes.get("carEditor")?.Path}>
-            <CarEditor />
-          </Route>
-          <Route path={Routes.get("clientEditor")?.Path}>
-            <ClientEditor />
-          </Route>
-        </Switch>
-      </Container>
-      <Footer />
+      <Grid container direction={"column"} alignItems={"stretch"} justify={"space-between"}>
+        <Grid item>
+          <Header />
+        </Grid>
+        <Grid item>
+          <Container>
+            <Switch>
+              <Route exact path={Routes.get("home")?.Path}>
+                <Home />
+              </Route>
+              <Route path={Routes.get("jobEditor")?.Path}>
+                <JobEditor />
+              </Route>
+              <Route path={Routes.get("carEditor")?.Path}>
+                <CarEditor />
+              </Route>
+              <Route path={Routes.get("clientEditor")?.Path}>
+                <ClientEditor />
+              </Route>
+            </Switch>
+          </Container>
+        </Grid>
+        <Grid container direction={"column"} alignItems={"flex-start"} justify={"flex-end"}>
+          <Footer />
+        </Grid>
+      </Grid>
     </BrowserRouter>
   );
 }

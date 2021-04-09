@@ -1,13 +1,18 @@
+import "./static/css/index.css"
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './static/css/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'fontsource-roboto';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+
+const theme = createMuiTheme();
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );

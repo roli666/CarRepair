@@ -1,3 +1,25 @@
+interface Error {
+    [key: string]: string[]
+}
+
 export class ValidationError {
-    constructor(public type: string, public title: string, public status: number, public traceId: string, public errors: Map<string, string[]>) { }
+    constructor(
+        public type: string = "",
+        public title: string = "",
+        public status: number = 0,
+        public traceId: string = "",
+        public errors: Error = {}
+    ) { }
+
+    hasErrors(): boolean {
+        return this.getErrorLength() !== 0
+    }
+
+    getErrorLength(): number {
+        return Object.keys(this.errors).length
+    }
+
+    getErrors(): string[] {
+        return Object.values(this.errors).flat()
+    }
 }

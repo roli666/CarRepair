@@ -1,5 +1,3 @@
-import { ErrorHandler } from "./ErrorHandler"
-import { ValidationError } from "./models/ValidationError"
 import configuration from "../static/configuration.json"
 
 export class ApiFetcher {
@@ -12,7 +10,6 @@ export class ApiFetcher {
             const data = await response.json()
             return data as T
         }
-        ErrorHandler.showError(response.status)
         return null
     }
 
@@ -28,11 +25,6 @@ export class ApiFetcher {
         if (response.ok) {
             return response
         }
-        if(response.status === 400)
-        {
-            ErrorHandler.logError((await response.json()) as ValidationError)
-        }
-        ErrorHandler.showError(response.status)
         return response
     }
 
@@ -48,7 +40,6 @@ export class ApiFetcher {
         if (response.ok) {
             return response
         }
-        ErrorHandler.showError(response.status)
         return response
     }
 
@@ -60,7 +51,6 @@ export class ApiFetcher {
         if (response.ok) {
             return response
         }
-        ErrorHandler.showError(response.status)
         return response
     }
 }
