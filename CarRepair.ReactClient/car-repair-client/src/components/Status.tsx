@@ -54,7 +54,7 @@ export function Status(props: StatusProps) {
         props.showTooltip ?
             <Tooltip title={getStatusTooltipText(status)} placement={"top"}>
                 {status ?
-                    <CheckCircle color={"primary"}></CheckCircle>
+                    <CheckCircle color={"secondary"}></CheckCircle>
                     : <Cancel color={"error"}></Cancel>
                 }
             </Tooltip>

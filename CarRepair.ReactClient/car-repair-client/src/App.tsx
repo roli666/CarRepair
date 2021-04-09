@@ -28,11 +28,11 @@ import React from "react";
 function App() {
   return (
     <BrowserRouter>
-      <Grid container direction={"column"} alignItems={"stretch"} justify={"space-between"}>
-        <Grid item>
+      <Grid container direction={"row"}>
+        <Grid item xs={12}>
           <Header />
         </Grid>
-        <Grid item>
+        <Grid item xs={12}>
           <Container>
             <Switch>
               <Route exact path={Routes.get("home")?.Path}>
@@ -50,7 +50,7 @@ function App() {
             </Switch>
           </Container>
         </Grid>
-        <Grid container direction={"column"} alignItems={"flex-start"} justify={"flex-end"}>
+        <Grid item xs={12}>
           <Footer />
         </Grid>
       </Grid>

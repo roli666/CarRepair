@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { JobGrid } from './grids/JobGrid';
 
 export function JobEditor() {

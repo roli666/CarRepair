@@ -8,18 +8,18 @@ class CarGridProps {
     readOnly?: boolean = false
 }
 
-const emptyCar: Car = {
-    LicencePlate: "",
-    Owner: {
-        ContactInfo: {
-            Email: "",
-            PhoneContact: []
-        },
-        Firstname: "",
-        Lastname: ""
-    },
-    Type: ""
-}
+// const emptyCar: Car = {
+//     LicencePlate: "",
+//     Owner: {
+//         ContactInfo: {
+//             Email: "",
+//             PhoneContact: []
+//         },
+//         Firstname: "",
+//         Lastname: ""
+//     },
+//     Type: ""
+// }
 
 async function Initialize(): Promise<Car[]> {
     const result = await CarService.getAvailableCars()

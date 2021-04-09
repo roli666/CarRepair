@@ -8,22 +8,22 @@ class JobGridProps {
     readOnly?: boolean = false
 }
 
-const emptyJob: Job = {
-    Car: {
-        LicencePlate: "",
-        Owner: {
-            ContactInfo: {
-                Email: "",
-                PhoneContact: []
-            },
-            Firstname: "",
-            Lastname: ""
-        },
-        Type: ""
-    },
-    Registered: new Date(),
-    Status: JobStatus.Awaiting
-}
+// const emptyJob: Job = {
+//     Car: {
+//         LicencePlate: "",
+//         Owner: {
+//             ContactInfo: {
+//                 Email: "",
+//                 PhoneContact: []
+//             },
+//             Firstname: "",
+//             Lastname: ""
+//         },
+//         Type: ""
+//     },
+//     Registered: new Date(),
+//     Status: JobStatus.Awaiting
+// }
 
 async function Initialize(): Promise<Job[]> {
     const result = await JobService.getAvailableJobs()

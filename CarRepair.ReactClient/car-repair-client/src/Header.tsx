@@ -1,22 +1,14 @@
-import { 
-    AppBar, Button, Container, IconButton, List,
+import {
+    AppBar, Container, Grid, IconButton,
     ListItem, ListItemText, makeStyles, Menu,
     MenuItem, Toolbar
- } from '@material-ui/core';
+} from '@material-ui/core';
 import { Home } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { Routes } from "./RouteData";
 
 const useStyles = makeStyles({
-    navDisplayFlex: {
-        display: "flex",
-        justifyContent: "space-between"
-    },
-    navbarDisplayFlex: {
-        display: "flex",
-        justifyContent: "space-between"
-    },
     linkText: {
         textDecoration: "none",
         textTransform: "uppercase",
@@ -33,7 +25,7 @@ export function Header() {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
@@ -44,22 +36,32 @@ export function Header() {
     return (
         <AppBar position="static">
             <Toolbar>
-                <Container className={classes.navbarDisplayFlex}>
-                    <IconButton edge="start" color="inherit" aria-label="home">
-                        <Link to="/">
-                            <Home fontSize="large" className={classes.linkText} />
-                        </Link>
-                    </IconButton>
-                    <List component="nav" className={classes.navDisplayFlex} aria-labelledby="main navigation">
-                        <Link to={Routes.get("home")!.Path} className={classes.linkText}>
-                            <ListItem button>
-                                <ListItemText primary={Routes.get("home")!.Title} />
-                            </ListItem>
-                        </Link>
-                        <Button onClick={handleClick}>
-                            <ListItemText primary={"Admin"} className={classes.linkText} />
-                        </Button>
-                    </List>
+                <Container>
+                    <Grid container direction={"row"} alignItems={"center"}>
+                        <Grid item xs>
+                            <IconButton edge="start" color="inherit" aria-label="home">
+                                <Link to="/" className={classes.linkText}>
+                                    <Home fontSize="large" />
+                                </Link>
+                            </IconButton>
+                        </Grid>
+                        <Grid item component="nav" aria-labelledby="main navigation">
+                            <Grid container direction="row" alignItems="center" justify={"center"}>
+                                <Grid item>
+                                    <Link to={Routes.get("home")!.Path} className={classes.linkText}>
+                                        <ListItem button>
+                                            <ListItemText primary={Routes.get("home")!.Title} />
+                                        </ListItem>
+                                    </Link>
+                                </Grid>
+                                <Grid item>
+                                    <ListItem button onClick={handleClick}>
+                                        <ListItemText primary={"Admin"} className={classes.linkText} />
+                                    </ListItem>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </Container>
             </Toolbar>
             <Menu
