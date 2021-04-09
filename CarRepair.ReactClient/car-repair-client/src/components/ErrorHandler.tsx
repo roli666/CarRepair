@@ -29,8 +29,8 @@ export function ValidationResult(props: ValidationResultProps) {
     return (
         <Box border={3} borderColor={theme.palette.error.light} borderRadius={10}>
             <Grid container justify={"space-between"} direction={"row"}>
-                <Grid container xs alignItems={"center"} direction={"column"} justify={"center"}>
-                    <Error color={"error"} />
+                <Grid container item xs alignItems={"center"} direction={"column"} justify={"center"}>
+                    <Error fontSize={"large"} color={"error"} />
                 </Grid>
                 <Grid item xs={10}>
                     <List>
@@ -45,11 +45,11 @@ export function ValidationResult(props: ValidationResultProps) {
                         }
                     </List>
                 </Grid>
-                <Grid container xs alignItems={"flex-end"} direction={"column"}>
+                <Grid container item xs alignItems={"flex-end"} direction={"column"}>
                     <IconButton
                         aria-label={"close"}
                         color={"inherit"}
-                        size={"small"}
+                        size={"medium"}
                         onClick={props.collapsibleHandler}
                     >
                         <Close fontSize={"inherit"} />

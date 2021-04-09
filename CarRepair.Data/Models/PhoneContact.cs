@@ -9,8 +9,10 @@ namespace CarRepair.Data.Models
         [MaxLength(32)]
         [Phone]
         public string PhoneNumber { get; set; }
+
         [JsonIgnore]
         public string ContactInfoId { get; set; }
+
         [JsonIgnore]
         public ContactInfo ContactInfo { get; set; }
     }

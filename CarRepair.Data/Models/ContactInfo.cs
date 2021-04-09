@@ -10,10 +10,14 @@ namespace CarRepair.Data.Models
         [MaxLength(256)]
         [EmailAddress]
         public string Email { get; set; }
+
         [JsonIgnore]
         public int ClientId { get; set; }
+
         [JsonIgnore]
         public Client Client { get; set; }
+
+        [MinLength(1)]
         public IEnumerable<PhoneContact> PhoneContact { get; set; }
     }
 }
