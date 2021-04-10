@@ -50,19 +50,22 @@ export function Status(props: StatusProps) {
 
     connection?.state === HubConnectionState.Connected && connection.invoke("GetStatus")
 
+    const color = "#5edc1f"
+    const errorColor = "error"
+
     return (
         props.showTooltip ?
             <Tooltip title={getStatusTooltipText(status)} placement={"top"}>
                 {status ?
-                    <CheckCircle color={"secondary"}></CheckCircle>
-                    : <Cancel color={"error"}></Cancel>
+                    <CheckCircle htmlColor={color}></CheckCircle>
+                    : <Cancel color={errorColor}></Cancel>
                 }
             </Tooltip>
             :
             <>
                 {status ?
-                    <CheckCircle color={"primary"}></CheckCircle>
-                    : <Cancel color={"error"}></Cancel>
+                    <CheckCircle htmlColor={color}></CheckCircle>
+                    : <Cancel color={errorColor}></Cancel>
                 }
             </>
     )

@@ -34,8 +34,9 @@ export function ClientGrid(props: ClientGridProps) {
             setClients([...clients, insertedClient])
         }
         if (result.status === 400) {
-            const validationResult = await result.json()
-            setValidationError(Object.assign(new ValidationError(), validationResult))
+            const validationResult = ValidationError.fromJSON(ValidationError, await result.json())
+            setValidationError(validationResult)
+            console.warn(validationResult.getErrors().join("\n"))
         }
     }
 
