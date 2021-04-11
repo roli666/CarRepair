@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { Container } from '@material-ui/core';
+import React, { useEffect } from 'react';
 import { CarGrid } from './grids/CarGrid';
 
 export function CarEditor() {
@@ -11,9 +12,9 @@ export function CarEditor() {
     }, []);
 
     return (
-        <div>
+        <Container>
             <h1>Car Editor</h1>
             <CarGrid></CarGrid>
-        </div>
+        </Container>
     );
 }

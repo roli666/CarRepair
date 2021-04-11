@@ -1,61 +1,23 @@
 import React, { useEffect, useState } from "react"
-import { Box, Collapse, Grid, IconButton, List, ListItem, ListItemText, useTheme } from "@material-ui/core"
-import { Close, Error } from '@material-ui/icons';
-import { ValidationError } from "../api/models/ValidationError"
+import { Collapse } from "@material-ui/core"
+import { Alert } from "@material-ui/lab";
 
 interface ValidationErrorProps {
-    error: ValidationError
+    openAlert: boolean
+    closeAlertCallback: () => void
 }
 export function ValidationErrorElement(props: ValidationErrorProps) {
-    const [open, setOpen] = useState(props.error.hasErrors());
+    const [open, setOpen] = useState<boolean>(props.openAlert);
 
     useEffect(() => {
-        setOpen(props.error.hasErrors())
-    }, [props.error])
+        setOpen(props.openAlert)
+    }, [props.openAlert])
 
     return (
         <Collapse in={open}>
-            <ValidationResult error={props.error} collapsibleHandler={() => setOpen(false)} />
+            <Alert severity={"error"} onClose={() => { props.closeAlertCallback() }}>
+                There was a server side validation error, check the console for more information.
+            </Alert>
         </Collapse>
-    )
-}
-
-interface ValidationResultProps {
-    error: ValidationError
-    collapsibleHandler: () => void
-}
-export function ValidationResult(props: ValidationResultProps) {
-    const theme = useTheme()
-    return (
-        <Box border={3} borderColor={theme.palette.error.light} borderRadius={10}>
-            <Grid container justify={"space-between"} direction={"row"}>
-                <Grid container item xs alignItems={"center"} direction={"column"} justify={"center"}>
-                    <Error fontSize={"large"} color={"error"} />
-                </Grid>
-                <Grid item xs={10}>
-                    <List>
-                        {
-                            props.error.getErrors().map((error, index) => {
-                                return (
-                                    <ListItem key={index}>
-                                        <ListItemText>{error}</ListItemText>
-                                    </ListItem>
-                                )
-                            })
-                        }
-                    </List>
-                </Grid>
-                <Grid container item xs alignItems={"flex-end"} direction={"column"}>
-                    <IconButton
-                        aria-label={"close"}
-                        color={"inherit"}
-                        size={"medium"}
-                        onClick={props.collapsibleHandler}
-                    >
-                        <Close fontSize={"inherit"} />
-                    </IconButton>
-                </Grid>
-            </Grid>
-        </Box>
     )
 }

@@ -4,27 +4,25 @@ import { Status } from "./components/Status"
 
 export function Footer() {
     return (
-        <AppBar position={"static"}>
+        <AppBar component={"footer"} position={"static"}>
             <Container>
-                <footer>
-                    <Grid container direction={"row"}>
-                        <Grid item xs>
-                            <Typography component="p">© {new Date().getFullYear()} Aszalós Roland, all right reserved</Typography>
-                        </Grid>
-                        <Grid item>
-                            <Grid container direction="row" alignItems="center">
-                                <Grid item>
-                                    <Typography component="p">
-                                        Server status:
+                <Grid container direction={"row"}>
+                    <Grid item xs>
+                        <Typography component="p">© {new Date().getFullYear()} Aszalós Roland, all right reserved</Typography>
+                    </Grid>
+                    <Grid item>
+                        <Grid container direction="row" alignItems="center">
+                            <Grid item>
+                                <Typography component="p">
+                                    Server status:
                                 </Typography>
-                                </Grid>
-                                <Grid item>
-                                    &nbsp;<Status showTooltip={true} />
-                                </Grid>
+                            </Grid>
+                            <Grid item>
+                                &nbsp;<Status showTooltip={true} />
                             </Grid>
                         </Grid>
                     </Grid>
-                </footer>
+                </Grid>
             </Container>
         </AppBar>
     )

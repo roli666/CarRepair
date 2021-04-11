@@ -1,7 +1,8 @@
-import { IconButton, Input, List, ListItem, ListItemSecondaryAction, ListItemText, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
+import { FormControl, FormGroup, FormHelperText, IconButton, Input, InputLabel, List, ListItem, ListItemSecondaryAction, ListItemText, Table, TableBody, TableCell, TableHead, TableRow, TextField, Tooltip } from "@material-ui/core";
 import { Add, Cancel } from "@material-ui/icons";
 import { ValidationError } from "api/models/ValidationError";
-import { useEffect, useState } from "react";
+import React, { BaseSyntheticEvent, useEffect, useState } from "react";
+import { Controller, DeepMap, FieldError, useForm } from "react-hook-form";
 import { Client } from "../../api/models/Client";
 import { ClientService } from "../../services/ClientService";
 import { ValidationErrorElement } from "../ErrorHandler"
@@ -19,7 +20,7 @@ async function Initialize(): Promise<Client[]> {
 
 export function ClientGrid(props: ClientGridProps) {
     const [clients, setClients] = useState<Client[]>([])
-    const [validationError, setValidationError] = useState<ValidationError>(new ValidationError())
+    const [openAlert, setOpenAlert] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -35,8 +36,8 @@ export function ClientGrid(props: ClientGridProps) {
         }
         if (result.status === 400) {
             const validationResult = ValidationError.fromJSON(ValidationError, await result.json())
-            setValidationError(validationResult)
             console.warn(validationResult.getErrors().join("\n"))
+            setOpenAlert(true)
         }
     }
 
@@ -52,7 +53,7 @@ export function ClientGrid(props: ClientGridProps) {
 
     return (
         <>
-            <ValidationErrorElement error={validationError} />
+            <ValidationErrorElement openAlert={openAlert} closeAlertCallback={() => setOpenAlert(false)} />
             <Table>
                 <ClientGridHead />
                 <ClientGridBody
@@ -119,47 +120,75 @@ function ClientGridBody(props: ClientGridBodyProps) {
 interface AddNewClientRowProps {
     newClientCallback: (client: Client) => void
 }
-
+interface IFormInput {
+    firstname: string,
+    lastname: string,
+    email: string,
+    phoneNumber: string
+}
 function AddNewClientRow(props: AddNewClientRowProps) {
-    const [newClientFirstName, setNewClientFirstName] = useState<string>("")
-    const [newClientLastName, setNewClientLastName] = useState<string>("")
-    const [newClientEmail, setNewClientEmail] = useState<string>("")
+    const { register, handleSubmit, reset, control } = useForm<IFormInput>({
+        defaultValues: {
+            firstname: "",
+            lastname: "",
+            email: "",
+            phoneNumber: ""
+        },
+        reValidateMode: "onChange"
+    })
+
     const [newPhoneNumbers, setNewPhoneNumbers] = useState<string[]>([])
     const [phoneNumberInputValue, setPhoneNumberInputValue] = useState<string>("")
 
-    const resetState = () => {
-        setNewClientFirstName("")
-        setNewClientLastName("")
-        setNewClientEmail("")
-        setNewPhoneNumbers([])
-        setPhoneNumberInputValue("")
+    const validatePhoneNumber = () => {
+
     }
 
-    const saveClient = async () => {
+    const clientIsValid = (): boolean => {
+        return false
+    }
+
+    const onSubmit = async (data: IFormInput, event?: BaseSyntheticEvent) => {
         const client: Client = {
             ContactInfo: {
-                Email: newClientEmail,
+                Email: data.email,
                 PhoneContact: newPhoneNumbers.map((value) => { return { PhoneNumber: value } })
             },
-            Firstname: newClientFirstName,
-            Lastname: newClientLastName
+            Firstname: data.firstname,
+            Lastname: data.lastname
         }
-        resetState()
+        reset()
         props.newClientCallback(client)
+    }
+
+    const onError = async (errors: DeepMap<IFormInput, FieldError>, event?: BaseSyntheticEvent) => {
+        console.log(errors)
     }
 
     return (
         <TableRow>
             <TableCell>
-                <IconButton color="primary" aria-label="Add new job" onClick={() => saveClient()}>
+                <IconButton color="primary" type={"submit"} onClick={handleSubmit(onSubmit, onError)} aria-label="Add new job">
                     <Add></Add>
                 </IconButton>
             </TableCell>
             <TableCell>
-                <Input
-                    type={"text"}
-                    onChange={(event) => { setNewClientEmail(event.target.value) }}
-                    value={newClientEmail} />
+                <Controller
+                    name="email"
+                    control={control}
+                    render={({ fieldState }) => (
+                        <TextField
+                            type={"email"}
+                            required={true}
+                            label={"E-mail address"}
+                            helperText={fieldState.error ?? ""}
+                            error={fieldState.invalid}
+                        />
+                    )}
+                    rules={{
+                        required: "The e-mail field must be a valid e-mail. ex.: john.doe@no-reply.com"
+                    }}
+                />
             </TableCell>
             <TableCell>
                 <List>
@@ -178,34 +207,67 @@ function AddNewClientRow(props: AddNewClientRowProps) {
                             </ListItem>
                     )
                     }
-                    <ListItem>
-                        <Input
-                            type={"text"}
-                            onChange={(event) => setPhoneNumberInputValue(event.target.value)}
-                            value={phoneNumberInputValue} />
-                        <ListItemSecondaryAction>
-                            <IconButton onClick={() => {
-                                phoneNumberInputValue.length !== 0 && newPhoneNumbers.push(phoneNumberInputValue)
-                                setNewPhoneNumbers([...newPhoneNumbers])
-                            }}>
-                                <Add />
-                            </IconButton>
-                        </ListItemSecondaryAction>
-                    </ListItem>
+                    <FormGroup row>
+                        <Controller
+                            name="phoneNumber"
+                            control={control}
+                            render={({ fieldState }) => (
+                                <TextField
+                                    type={"tel"}
+                                    label={"Phone number to add"}
+                                    helperText={fieldState.error ?? ""}
+                                    error={fieldState.invalid}
+                                />
+                            )}
+                            rules={{
+                                required: "The phone number field must be a valid phone number."
+                            }}
+                        />
+                        <IconButton onClick={() => {
+                            phoneNumberInputValue.length !== 0 && newPhoneNumbers.push(phoneNumberInputValue)
+                            setNewPhoneNumbers([...newPhoneNumbers])
+                        }}>
+                            <Add />
+                        </IconButton>
+                    </FormGroup>
                 </List>
             </TableCell>
             <TableCell>
-                <Input
-                    type={"text"}
-                    onChange={(event) => { setNewClientLastName(event.target.value) }}
-                    value={newClientLastName} />
+                <Controller
+                    name="lastname"
+                    control={control}
+                    render={({ fieldState }) => (
+                        <TextField
+                            required={true}
+                            type={"text"}
+                            label={"Lastname"}
+                            helperText={fieldState.error ?? ""}
+                            error={fieldState.invalid}
+                        />
+                    )}
+                    rules={{
+                        required: "The lastname field must not be empty."
+                    }}
+                />
             </TableCell>
             <TableCell>
-                <Input
-                    type={"text"}
-                    onChange={(event) => { setNewClientFirstName(event.target.value) }}
-                    value={newClientFirstName} />
+                <Controller
+                    name="firstname"
+                    control={control}
+                    render={({ fieldState }) => (
+                        <TextField
+                            required={true}
+                            type={"text"}
+                            label={"Firstname"}
+                            helperText={fieldState.error ?? ""}
+                            error={fieldState.invalid}
+                        />
+                    )}
+                    rules={{
+                        required: "The firstname field must not be empty."
+                    }}
+                />
             </TableCell>
-        </TableRow>
+        </TableRow >
     )
 }

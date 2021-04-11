@@ -24,16 +24,15 @@ import React from "react";
 //   scope: "openid profile api",
 //   responseType:'token id_token'
 // };
-
 function App() {
   return (
     <BrowserRouter>
-      <Grid container direction={"row"}>
-        <Grid item xs={12}>
+      <Grid container direction={"column"}>
+        <Grid item>
           <Header />
         </Grid>
-        <Grid item xs={12}>
-          <Container>
+        <Grid item>
+          <Container component={"main"}>
             <Switch>
               <Route exact path={Routes.get("home")?.Path}>
                 <Home />
@@ -50,7 +49,7 @@ function App() {
             </Switch>
           </Container>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item>
           <Footer />
         </Grid>
       </Grid>

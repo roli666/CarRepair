@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Container } from '@material-ui/core';
 import { ClientGrid } from './grids/ClientGrid';
 
 export function ClientEditor() {
@@ -11,9 +12,9 @@ export function ClientEditor() {
     }, []);
 
     return (
-        <div>
+        <Container>
             <h1>Client Editor</h1>
             <ClientGrid></ClientGrid>
-        </div>
+        </Container>
     );
 }
