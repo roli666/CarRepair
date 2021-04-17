@@ -48,7 +48,7 @@ async function Initialize(): Promise<Car[]> {
 export function CarGrid(props: CarGridProps) {
   const [cars, setCars] = useState<Car[]>([]);
   const [openAlert, setOpenAlert] = useState(false);
-  const apiStatus = useContext(StatusContext);
+  const apiIsAlive = useContext(StatusContext);
 
   useEffect(() => {
     (async () => {
@@ -58,9 +58,10 @@ export function CarGrid(props: CarGridProps) {
 
   useEffect(() => {
     (async () => {
-      if (apiStatus.isAlive) setCars(await Initialize());
+      console.log("apistatus called + " + apiIsAlive);
+      if (apiIsAlive) setCars(await Initialize());
     })();
-  }, [apiStatus.isAlive]);
+  }, [apiIsAlive]);
 
   const addCar = async (car: CarMessage) => {
     const result = await CarService.saveCar(car);
@@ -221,7 +222,7 @@ function AddNewCarRow(props: AddNewCarRowProps) {
                 label={"Owner"}
                 error={fieldState.invalid}
                 onChange={(e) => field.onChange(e.target.value)}
-                defaultValue={0}
+                defaultValue={""}
               >
                 {availableClients.map((client, index) => (
                   <MenuItem key={index} value={client.Id}>
@@ -236,7 +237,7 @@ function AddNewCarRow(props: AddNewCarRowProps) {
           )}
           rules={{
             validate: {
-              mustNotBeEmpty: (value) => value !== 0 || "Every car must have an owner.",
+              mustNotBeEmpty: (value) => value !== "" || "Every car must have an owner.",
             },
           }}
         />

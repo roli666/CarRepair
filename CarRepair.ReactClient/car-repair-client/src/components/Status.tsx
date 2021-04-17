@@ -13,10 +13,8 @@ const getStatusTooltipText = (running: boolean) => {
   if (!running) return "No API connection";
   else return "API is running";
 };
-const APIStatus = {
-  isAlive: false,
-};
-export const StatusContext = React.createContext(APIStatus);
+
+export const StatusContext = React.createContext(false);
 
 export function Status(props: StatusProps) {
   const [connection, setConnection] = useState<HubConnection>();
@@ -57,7 +55,7 @@ export function Status(props: StatusProps) {
   const errorColor = "error";
 
   return (
-    <StatusContext.Provider value={{ isAlive: status }}>
+    <StatusContext.Provider value={status}>
       {props.showTooltip ? (
         <Tooltip title={getStatusTooltipText(status)} placement={"top"}>
           {status ? <CheckCircle htmlColor={color}></CheckCircle> : <Cancel color={errorColor}></Cancel>}
