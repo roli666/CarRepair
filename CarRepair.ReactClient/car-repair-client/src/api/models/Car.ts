@@ -6,3 +6,10 @@ export interface Car {
   LicencePlate: string;
   Owner: Client;
 }
+
+export interface CarMessage {
+  Id?: number;
+  Type: string;
+  LicencePlate: string;
+  OwnerId: number;
+}

@@ -1,12 +1,12 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import { Footer } from "./Footer"
-import { Header } from "./Header"
-import { Home } from "./Home"
-import { JobEditor } from './components/JobEditor';
-import { ClientEditor } from './components/ClientEditor';
-import { CarEditor } from './components/CarEditor';
-import { Container, Grid } from '@material-ui/core';
-import { Routes } from 'RouteData';
+import { Footer } from "./Footer";
+import { Header } from "./Header";
+import { Home } from "./Home";
+import { JobEditor } from "./components/JobEditor";
+import { ClientEditor } from "./components/ClientEditor";
+import { CarEditor } from "./components/CarEditor";
+import { Container, Grid } from "@material-ui/core";
+import { Routes } from "RouteData";
 import React from "react";
 
 //import configuration from './static/configuration.json'
@@ -24,6 +24,12 @@ import React from "react";
 //   scope: "openid profile api",
 //   responseType:'token id_token'
 // };
+const APIHealthStatus = {
+  isAlive: false,
+};
+
+export const HealthStatus = React.createContext(APIHealthStatus);
+
 function App() {
   return (
     <BrowserRouter>

@@ -1,5 +1,5 @@
 import {
-  FormGroup,
+  Button,
   IconButton,
   List,
   ListItem,
@@ -16,12 +16,13 @@ import {
 import { Add, Cancel } from "@material-ui/icons";
 import { ValidationError } from "api/models/ValidationError";
 import React, { BaseSyntheticEvent, useEffect, useState } from "react";
-import { Controller, DeepMap, FieldError, useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 import { Client } from "../../api/models/Client";
 import { ClientService } from "../../services/ClientService";
 import { ValidationErrorElement } from "../ErrorHandler";
 import { EmailValidation, PhoneNumberValidation } from "../../helpers/Regex";
+import { PhoneContact } from "api/models/ContactInfo";
 
 const useStyle = makeStyles({
   phoneNumberErrorList: {
@@ -138,24 +139,21 @@ function ClientGridBody(props: ClientGridBodyProps) {
 interface AddNewClientRowProps {
   newClientCallback: (client: Client) => void;
 }
-interface IClientInput {
+type IClientInput = {
   firstname: string;
   lastname: string;
   email: string;
-  phoneNumbers: string[];
-}
-interface IPhoneNumberInput {
-  phoneNumber: string;
-}
+  phoneNumbers: PhoneContact[];
+};
 function AddNewClientRow(props: AddNewClientRowProps) {
   const classes = useStyle();
   const {
     handleSubmit,
     reset,
     control,
-    formState: { errors: clientErrors },
-    setValue,
-    getValues,
+    formState: { errors },
+    setError,
+    clearErrors,
   } = useForm<IClientInput>({
     defaultValues: {
       firstname: "",
@@ -166,32 +164,21 @@ function AddNewClientRow(props: AddNewClientRowProps) {
     reValidateMode: "onChange",
   });
 
-  const [phoneNumbers, setPhoneNumbers] = useState<string[]>(getValues("phoneNumbers"));
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "phoneNumbers",
+  });
 
   useEffect(() => {
-    setValue("phoneNumbers",phoneNumbers)
-  }, [phoneNumbers, setValue]);
-
-  control.register("phoneNumbers", {
-    validate: {
-      mustNotBeEmpty: (value) => value.length !== 0 || "The new client must have at least 1 phone number.",
-    },
-  });
-
-  const { handleSubmit: handlePhoneSubmit, reset: phoneReset, control: phoneControl } = useForm<IPhoneNumberInput>({
-    defaultValues: {
-      phoneNumber: "",
-    },
-    reValidateMode: "onChange",
-  });
+    if (!fields.length) setError("phoneNumbers", { message: "There must be at least one phone number per client." });
+    else clearErrors("phoneNumbers");
+  }, [clearErrors, fields, setError]);
 
   const onClientSubmit = async (data: IClientInput, event?: BaseSyntheticEvent) => {
     const client: Client = {
       ContactInfo: {
         Email: data.email,
-        PhoneContact: getValues("phoneNumbers").map((value) => {
-          return { PhoneNumber: value };
-        }),
+        PhoneContact: data.phoneNumbers,
       },
       Firstname: data.firstname,
       Lastname: data.lastname,
@@ -205,22 +192,10 @@ function AddNewClientRow(props: AddNewClientRowProps) {
     props.newClientCallback(client);
   };
 
-  const onPhoneSubmit = (data: IPhoneNumberInput, event?: BaseSyntheticEvent) => {
-    setPhoneNumbers([...getValues("phoneNumbers"), data.phoneNumber])
-    setValue("phoneNumbers", [...getValues("phoneNumbers"), data.phoneNumber]);
-    phoneReset({
-      phoneNumber: "",
-    });
-  };
-
-  const onClientError = async (errors: DeepMap<IClientInput, FieldError>, event?: BaseSyntheticEvent) => {
-    console.log(clientErrors.phoneNumbers);
-  };
-
   return (
     <TableRow>
-      <TableCell>
-        <IconButton color="primary" type={"submit"} onClick={handleSubmit(onClientSubmit, onClientError)} aria-label="Add new job">
+      <TableCell align={"left"}>
+        <IconButton color="primary" type={"submit"} onClick={handleSubmit(onClientSubmit)} aria-label="Add new client">
           <Add></Add>
         </IconButton>
       </TableCell>
@@ -253,11 +228,19 @@ function AddNewClientRow(props: AddNewClientRowProps) {
       <TableCell>
         <List className={""}>
           <ListItem>
-            <Controller
-              name="phoneNumber"
-              control={phoneControl}
-              render={({ fieldState, field }) => (
-                <FormGroup row>
+            <Button variant={"contained"} color={"primary"} onClick={() => append({ PhoneNumber: "" })} endIcon={<Add />}>
+              Add phone number
+            </Button>
+          </ListItem>
+          <ListItem hidden={Boolean(errors.phoneNumbers)}>
+            <ErrorMessage errors={errors} name="phoneNumbers" as={<ListItemText className={classes.redText} />} />
+          </ListItem>
+          {fields.map((field, index) => (
+            <ListItem key={field.id}>
+              <Controller
+                name={`phoneNumbers.${index}.PhoneNumber` as const}
+                control={control}
+                render={({ fieldState, field }) => (
                   <TextField
                     type={"tel"}
                     label={"Phone number to add"}
@@ -267,39 +250,25 @@ function AddNewClientRow(props: AddNewClientRowProps) {
                     onChange={(e) => field.onChange(e.target.value)}
                     defaultValue={field.value}
                   />
-                  <IconButton onClick={handlePhoneSubmit(onPhoneSubmit)}>
-                    <Add />
-                  </IconButton>
-                </FormGroup>
-              )}
-              rules={{
-                required: "Cannot add an empty phone number.",
-                pattern: {
-                  // eslint-disable-next-line no-useless-escape
-                  value: PhoneNumberValidation,
-                  message: "Cannot add an invalid phone number.",
-                },
-                validate: {
-                  doesNotExistInNewPhoneNumbers: (value) =>
-                    !getValues("phoneNumbers").includes(value) || "This phone number already exists in the list.",
-                },
-              }}
-            />
-          </ListItem>
-          <ListItem>Phone numbers client will have: </ListItem>
-          <ErrorMessage errors={clientErrors} name="phoneNumbers" as={<ListItem className={classes.redText} />} />
-          {phoneNumbers.map((number, index) => (
-            <ListItem key={index}>
-              <ListItemText>{number}</ListItemText>
+                )}
+                rules={{
+                  required: "Cannot add an empty phone number.",
+                  pattern: {
+                    // eslint-disable-next-line no-useless-escape
+                    value: PhoneNumberValidation,
+                    message: "Cannot add an invalid phone number.",
+                  },
+                  validate: {
+                    isDuplicatePhoneNumber: (value) => {
+                      const numbers = fields.map((field) => field.PhoneNumber);
+                      numbers.splice(index, 1);
+                      if (numbers.includes(value)) return "This phone number already exists in the list.";
+                    },
+                  },
+                }}
+              />
               <ListItemSecondaryAction>
-                <IconButton
-                  onClick={() => {
-                    const numbers = getValues("phoneNumbers");
-                    numbers.splice(index, 1);
-                    console.log(numbers);
-                    setPhoneNumbers([...numbers])
-                  }}
-                >
+                <IconButton onClick={() => remove(index)}>
                   <Cancel />
                 </IconButton>
               </ListItemSecondaryAction>

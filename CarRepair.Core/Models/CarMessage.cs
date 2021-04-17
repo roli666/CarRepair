@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace CarRepair.Data.Models
+namespace CarRepair.Core.Models
 {
-    public class Car
+    public class CarMessage
     {
         public int Id { get; set; }
 
@@ -16,8 +18,6 @@ namespace CarRepair.Data.Models
         [Required]
         [MaxLength(128)]
         public string LicencePlate { get; set; }
-
-        public Client Owner { get; set; }
 
         [Required]
         public int OwnerId { get; set; }

@@ -1,4 +1,5 @@
-﻿using CarRepair.Data;
+﻿using CarRepair.Core.Models;
+using CarRepair.Data;
 using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,14 @@ namespace CarRepair.API.Controllers
             using (_db)
             {
                 _logger.LogDebug("Sending cars for user:{0}", User);
-                return Ok(await _db.Cars.ToListAsync());
+
+                var cars = await _db.Cars
+                    .Include(car => car.Owner)
+                    .ThenInclude(client => client.ContactInfo)
+                    .ThenInclude(contactInfo => contactInfo.PhoneContact)
+                    .ToListAsync();
+
+                return Ok(cars);
             }
         }
 
@@ -38,22 +46,37 @@ namespace CarRepair.API.Controllers
             using (_db)
             {
                 _logger.LogDebug("Sending car:{1} for user:{0}", User, id);
-                return Ok(await _db.Cars.FindAsync(id));
+
+                var car = await _db.Cars
+                    .Include(car => car.Owner)
+                    .ThenInclude(client => client.ContactInfo)
+                    .ThenInclude(contactInfo => contactInfo.PhoneContact)
+                    .FirstOrDefaultAsync(car => car.Id == id);
+
+                return Ok(car);
             }
         }
 
         // POST <CarController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Car value)
+        public async Task<IActionResult> Post([FromBody] CarMessage value)
         {
             using (_db)
             {
                 _logger.LogDebug("Inserting car:{1} for user:{0}", User, value.LicencePlate);
 
-                await _db.Cars.AddAsync(value);
-                await _db.SaveChangesAsync();
+                var car = new Car
+                {
+                    LicencePlate = value.LicencePlate,
+                    OwnerId = value.OwnerId,
+                    Type = value.Type
+                };
 
-                return Ok(value);
+                await _db.Cars.AddAsync(car);
+                await _db.SaveChangesAsync();
+                await _db.Entry(car).Reference(c => c.Owner).LoadAsync();
+
+                return Ok(car);
             }
         }
 

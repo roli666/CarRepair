@@ -9,8 +9,10 @@ namespace CarRepair.Data.Models
     {
         public int Id { get; set; }
 
-        [Required]
         public Car Car { get; set; }
+
+        [Required]
+        public int CarId { get; set; }
 
         [Required]
         public DateTime Registered { get; set; }
