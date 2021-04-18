@@ -20,6 +20,10 @@ namespace CarRepair.Data.Models
         public DateTime? Finished { get; set; }
 
         public JobStatus Status { get; set; } = JobStatus.Awaiting;
+
+        [Required]
+        [MinLength(5)]
+        public string Description { get; set; }
     }
 
     public enum JobStatus

@@ -40,12 +40,13 @@ namespace CarRepair.API
             services.AddDefaultIdentity<CarRepairUser>().AddEntityFrameworkStores<CarRepairContext>();
 
             services.AddIdentityServer().AddApiAuthorization<CarRepairUser, CarRepairContext>()
+                .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:ApiResources"))
                 .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"));
 
             services.AddAuthentication().AddIdentityServerJwt().AddJwtBearer("Bearer", options =>
             {
                 // URL of our identity server
-                options.Authority = "https://localhost:5001";
+                options.Authority = "https://localhost:55000";
                 // HTTPS required for the authority (defaults to true but disabled for development).
                 options.RequireHttpsMetadata = false;
                 // the name of this API - note: matches the API resource name configured above
@@ -55,7 +56,7 @@ namespace CarRepair.API
             services.AddCors(options =>
                 {
                     options.AddPolicy("localhostPolicy", builder =>
-                        builder.WithOrigins("http://localhost:3000", "https://localhost:3000")
+                        builder.WithOrigins("http://localhost:3000", "https://localhost:3000", "http://localhost:3000/sign-in", "https://localhost:3000/sign-in")
                                .AllowCredentials()
                                .AllowAnyHeader()
                                .AllowAnyMethod()
