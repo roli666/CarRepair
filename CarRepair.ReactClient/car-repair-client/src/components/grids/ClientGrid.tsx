@@ -21,6 +21,7 @@ import { ErrorMessage } from "@hookform/error-message";
 import { Client } from "../../api/models/Client";
 import { ClientService } from "../../services/ClientService";
 import { ValidationErrorElement } from "../ErrorHandler";
+import { ConfirmationButton } from "../ConfirmationButton";
 import { EmailValidation, PhoneNumberValidation } from "../../helpers/Regex";
 import { PhoneContact } from "api/models/ContactInfo";
 
@@ -125,9 +126,14 @@ function ClientGridBody(props: ClientGridBodyProps) {
           <TableCell>{row.Lastname}</TableCell>
           <TableCell>{row.Firstname}</TableCell>
           <TableCell>
-            <IconButton onClick={() => props.deleteClientCallback(row)}>
-              <Cancel />
-            </IconButton>
+            <ConfirmationButton
+              as={
+                <IconButton>
+                  <Cancel />
+                </IconButton>
+              }
+              onConfirm={() => props.deleteClientCallback(row)}
+            />
           </TableCell>
         </TableRow>
       ))}
@@ -223,9 +229,10 @@ function AddNewClientRow(props: AddNewClientRowProps) {
               value: EmailValidation,
               message: "The e-mail given is not a valid e-mail address",
             },
-            validate:{
-              isUnique: (value)=> !props.existingClients.map(client => client.ContactInfo.Email).includes(value) || "The e-mail given must be unique."
-            }
+            validate: {
+              isUnique: (value) =>
+                !props.existingClients.map((client) => client.ContactInfo.Email).includes(value) || "The e-mail given must be unique.",
+            },
           }}
         />
       </TableCell>

@@ -19,6 +19,7 @@ import {
 import { Add, Cancel } from "@material-ui/icons";
 import { Client } from "api/models/Client";
 import { ValidationError } from "api/models/ValidationError";
+import { ConfirmationButton } from "components/ConfirmationButton";
 import { ValidationErrorElement } from "components/ErrorHandler";
 import { StatusContext } from "components/Status";
 import React, { BaseSyntheticEvent, useContext, useEffect, useState } from "react";
@@ -133,9 +134,14 @@ function CarGridBody(props: CarGridBodyProps) {
           <TableCell>{row.Owner.Lastname + row.Owner.Firstname}</TableCell>
           <TableCell>{row.Type}</TableCell>
           <TableCell>
-            <IconButton onClick={() => props.deleteCarCallback(row)}>
-              <Cancel />
-            </IconButton>
+          <ConfirmationButton
+              as={
+                <IconButton>
+                  <Cancel />
+                </IconButton>
+              }
+              onConfirm={() => props.deleteCarCallback(row)}
+            />
           </TableCell>
         </TableRow>
       ))}
