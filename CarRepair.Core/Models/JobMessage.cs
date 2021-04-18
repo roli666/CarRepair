@@ -1,13 +1,12 @@
-﻿using System;
+﻿using CarRepair.Data.Models;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CarRepair.Data.Models
+namespace CarRepair.Core.Models
 {
-    public class Job
+    public class JobMessage
     {
         public int Id { get; set; }
-
-        public Car Car { get; set; }
 
         [Required]
         public int CarId { get; set; }
@@ -20,12 +19,5 @@ namespace CarRepair.Data.Models
         public DateTime? Finished { get; set; }
 
         public JobStatus Status { get; set; } = JobStatus.Awaiting;
-    }
-
-    public enum JobStatus
-    {
-        Awaiting,
-        InProgress,
-        Done
     }
 }

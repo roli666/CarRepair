@@ -8,7 +8,7 @@ namespace CarRepair.Data
 {
     public class CarRepairContext : ApiAuthorizationDbContext<CarRepairUser>
     {
-        public CarRepairContext(DbContextOptions<CarRepairContext> options, IOptions<OperationalStoreOptions> operationalStoreOptions) 
+        public CarRepairContext(DbContextOptions<CarRepairContext> options, IOptions<OperationalStoreOptions> operationalStoreOptions)
             : base(options, operationalStoreOptions)
         {
         }

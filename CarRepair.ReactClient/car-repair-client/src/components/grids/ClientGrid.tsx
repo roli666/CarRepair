@@ -131,12 +131,13 @@ function ClientGridBody(props: ClientGridBodyProps) {
           </TableCell>
         </TableRow>
       ))}
-      <AddNewClientRow newClientCallback={props.newClientCallback} />
+      <AddNewClientRow existingClients={props.data} newClientCallback={props.newClientCallback} />
     </TableBody>
   );
 }
 
 interface AddNewClientRowProps {
+  existingClients: Client[];
   newClientCallback: (client: Client) => void;
 }
 type IClientInput = {
@@ -222,11 +223,14 @@ function AddNewClientRow(props: AddNewClientRowProps) {
               value: EmailValidation,
               message: "The e-mail given is not a valid e-mail address",
             },
+            validate:{
+              isUnique: (value)=> !props.existingClients.map(client => client.ContactInfo.Email).includes(value) || "The e-mail given must be unique."
+            }
           }}
         />
       </TableCell>
       <TableCell>
-        <List className={""}>
+        <List>
           <ListItem>
             <Button variant={"contained"} color={"primary"} onClick={() => append({ PhoneNumber: "" })} endIcon={<Add />}>
               Add phone number

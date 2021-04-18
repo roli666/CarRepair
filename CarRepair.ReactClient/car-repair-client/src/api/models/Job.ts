@@ -8,6 +8,16 @@ export interface Job {
   Finished?: Date;
   Status: JobStatus;
 }
+
+export interface JobMessage {
+  Id?: number;
+  CarId: number;
+  Registered?: Date;
+  Started?: Date;
+  Finished?: Date;
+  Status?: JobStatus;
+}
+
 export enum JobStatus {
   Awaiting,
   InProgress,

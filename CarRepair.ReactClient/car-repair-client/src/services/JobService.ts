@@ -1,5 +1,5 @@
 import { ApiFetcher } from "../api/ApiFetcher";
-import { Job } from "../api/models/Job";
+import { Job, JobMessage } from "../api/models/Job";
 
 export class JobService {
   public static async getAvailableJobs() {
@@ -11,7 +11,7 @@ export class JobService {
   public static async deleteJob(jobId: number) {
     return await ApiFetcher.deleteData(`job/${jobId}`);
   }
-  public static async saveJob(job: Job) {
+  public static async saveJob(job: JobMessage) {
     return await ApiFetcher.postData("job", job);
   }
   public static async updateJob(job: Job) {

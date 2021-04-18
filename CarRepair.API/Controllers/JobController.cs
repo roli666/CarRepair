@@ -1,4 +1,5 @@
-﻿using CarRepair.Data;
+﻿using CarRepair.Core.Models;
+using CarRepair.Data;
 using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,14 @@ namespace CarRepair.API.Controllers
             using (_db)
             {
                 _logger.LogDebug("Sending jobs for user:{0}", User);
-                return Ok(await _db.Jobs.ToListAsync());
+
+                var jobs = await _db.Jobs
+                    .Include(j => j.Car)
+                    .ThenInclude(car => car.Owner)
+                    .ThenInclude(c => c.ContactInfo)
+                    .ToListAsync();
+
+                return Ok(jobs);
             }
         }
 
@@ -37,22 +45,36 @@ namespace CarRepair.API.Controllers
         {
             using (_db)
             {
-                return Ok(await _db.Jobs.FindAsync(id));
+                _logger.LogDebug("Sending job:{1} for user:{0}", User, id);
+
+                var job = await _db.Jobs
+                    .Include(j => j.Car)
+                    .ThenInclude(car => car.Owner)
+                    .ThenInclude(c => c.ContactInfo)
+                    .FirstOrDefaultAsync(job => job.Id == id);
+
+                return Ok(await _db.Jobs.FindAsync(job));
             }
         }
 
         // POST <JobController>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Job value)
+        public async Task<IActionResult> Post([FromBody] JobMessage value)
         {
             using (_db)
             {
                 _logger.LogDebug("Inserting job:{1} for user:{0}", User, $"{value.Registered}");
 
-                await _db.Jobs.AddAsync(value);
-                await _db.SaveChangesAsync();
+                var job = new Job
+                {
+                    CarId = value.CarId
+                };
 
-                return Ok(value);
+                await _db.Jobs.AddAsync(job);
+                await _db.SaveChangesAsync();
+                await _db.Entry(job).Reference(j => j.Car).LoadAsync();
+
+                return Ok(job);
             }
         }
 
