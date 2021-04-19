@@ -1,6 +1,7 @@
 using CarRepair.API.Hubs;
 using CarRepair.Data;
 using CarRepair.Data.Models;
+using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using static IdentityModel.OidcConstants;
 
 namespace CarRepair.API
 {
@@ -39,30 +41,30 @@ namespace CarRepair.API
 
             services.AddDefaultIdentity<CarRepairUser>().AddEntityFrameworkStores<CarRepairContext>();
 
-            services.AddIdentityServer().AddApiAuthorization<CarRepairUser, CarRepairContext>()
-                .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:ApiResources"))
-                .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"));
+            services.AddIdentityServer().AddApiAuthorization<CarRepairUser, CarRepairContext>();
 
-            services.AddAuthentication().AddIdentityServerJwt().AddJwtBearer("Bearer", options =>
+            services.AddAuthentication(IdentityServerConstants.DefaultCookieAuthenticationScheme).AddIdentityServerJwt().AddJwtBearer("Bearer", options =>
             {
                 // URL of our identity server
-                options.Authority = "https://localhost:55000";
+                options.Authority = "https://localhost:55001";
                 // HTTPS required for the authority (defaults to true but disabled for development).
                 options.RequireHttpsMetadata = false;
                 // the name of this API - note: matches the API resource name configured above
-                options.Audience = "api";
+                options.Audience = "CarAPI";
             });
 
             services.AddCors(options =>
                 {
                     options.AddPolicy("localhostPolicy", builder =>
-                        builder.WithOrigins("http://localhost:3000", "https://localhost:3000", "http://localhost:3000/sign-in", "https://localhost:3000/sign-in")
+                        builder.WithOrigins("http://localhost:3000", "https://localhost:3000")
                                .AllowCredentials()
                                .AllowAnyHeader()
                                .AllowAnyMethod()
                     );
                 }
             );
+
+            services.AddRazorPages();
 
             services.AddSignalR();
         }
@@ -73,20 +75,27 @@ namespace CarRepair.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseCors("localhostPolicy");
 
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
 
+            app.UseCors("localhostPolicy");
+
             app.UseEndpoints(endpoints =>
             {   //TODO: add require auth
                 endpoints.MapControllers();
+                endpoints.MapRazorPages();
                 endpoints.MapHub<StatusHub>("/status", options =>
                 {
                     options.Transports = HttpTransportType.WebSockets;

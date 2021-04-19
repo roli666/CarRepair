@@ -1,13 +1,13 @@
-import { UserManager } from "oidc-client";
+import { UserManager, UserManagerSettings } from "oidc-client";
 
-const config = {
+const config: UserManagerSettings = {
   // the URL of our identity server
-  authority: "http://localhost:55000",
+  authority: "https://localhost:55001",
   // this ID maps to the client ID in the identity client configuration
   client_id: "react-client",
   // URL to redirect to after login
   redirect_uri: "http://localhost:3000",
-  response_type: "id_token token",
+  response_type: "code",
   // the scopes or resources we would like access to
   scope: "openid profile api",
   // URL to redirect to after logout
