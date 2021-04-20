@@ -1,11 +1,14 @@
 using CarRepair.API.Hubs;
 using CarRepair.Data;
 using CarRepair.Data.Models;
+using IdentityModel;
 using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,14 +46,16 @@ namespace CarRepair.API
 
             services.AddIdentityServer().AddApiAuthorization<CarRepairUser, CarRepairContext>();
 
-            services.AddAuthentication(IdentityServerConstants.DefaultCookieAuthenticationScheme).AddIdentityServerJwt().AddJwtBearer("Bearer", options =>
+            services.AddAuthentication(options =>
             {
-                // URL of our identity server
-                options.Authority = "https://localhost:55001";
-                // HTTPS required for the authority (defaults to true but disabled for development).
-                options.RequireHttpsMetadata = false;
-                // the name of this API - note: matches the API resource name configured above
-                options.Audience = "CarAPI";
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            }).AddIdentityServerJwt();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.ClaimsIdentity.RoleClaimType = JwtClaimTypes.Role;
             });
 
             services.AddCors(options =>
@@ -81,13 +86,14 @@ namespace CarRepair.API
                 app.UseHsts();
             }
 
+            app.UseIdentityServer();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseIdentityServer();
             app.UseAuthorization();
 
             app.UseCors("localhostPolicy");

@@ -1,15 +1,15 @@
-import { useEffect } from "react";
+import { useReactOidc } from "@axa-fr/react-oidc-context";
+import { Backdrop, CircularProgress } from "@material-ui/core";
+import React from "react";
 import { useHistory } from "react-router-dom";
-import { userManager } from "services/UserService";
 
 export function SignIn() {
+  const { events } = useReactOidc();
   const history = useHistory();
-  useEffect(() => {
-    async function signinAsync() {
-      const user = await userManager.signinRedirect();
-      console.log(user);
-    }
-    signinAsync();
-  }, [history]);
-  return <div>Redirecting to login...</div>;
+  events.addUserLoaded(() => history.push("/"));
+  return (
+    <Backdrop open={true}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
+  );
 }

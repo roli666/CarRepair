@@ -24,8 +24,8 @@ import { Car } from "api/models/Car";
 import { Controller, useForm } from "react-hook-form";
 import { ValidationError } from "api/models/ValidationError";
 import { ValidationErrorElement } from "components/ErrorHandler";
-import { Routes } from "RouteData";
 import { Link } from "react-router-dom";
+import { UsedRoutes } from "Routes";
 
 class JobGridProps {
   readOnly?: boolean = false;
@@ -191,7 +191,7 @@ function AddNewJobRow(props: AddNewJobRowProps) {
                 defaultValue={""}
               >
                 <MenuItem>
-                  <Link to={Routes.get("carEditor")!.Path} className={classes.buttonLinkText}>
+                  <Link to={UsedRoutes.CarEditor} className={classes.buttonLinkText}>
                     <Button variant={"contained"} color={"primary"} endIcon={<Add />}>
                       Add new car
                     </Button>

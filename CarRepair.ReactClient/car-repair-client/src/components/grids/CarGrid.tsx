@@ -25,7 +25,7 @@ import { StatusContext } from "components/Status";
 import React, { BaseSyntheticEvent, useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { Routes } from "RouteData";
+import { UsedRoutes } from "Routes";
 import { ClientService } from "services/ClientService";
 import { Car, CarMessage } from "../../api/models/Car";
 import { CarService } from "../../services/CarService";
@@ -237,7 +237,7 @@ function AddNewCarRow(props: AddNewCarRowProps) {
                 defaultValue={""}
               >
                 <MenuItem>
-                  <Link to={Routes.get("clientEditor")!.Path} className={classes.buttonLinkText}>
+                  <Link to={UsedRoutes.ClientEditor} className={classes.buttonLinkText}>
                     <Button variant={"contained"} color={"primary"} endIcon={<Add />}>
                       Add new owner
                     </Button>
