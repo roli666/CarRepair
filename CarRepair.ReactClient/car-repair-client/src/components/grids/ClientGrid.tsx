@@ -53,6 +53,8 @@ export function ClientGrid(props: ClientGridProps) {
     })();
   }, []);
 
+  const test = async ()=>setClients(await Initialize());
+
   const addClient = async (client: Client) => {
     const result = await ClientService.saveClient(client);
     if (result.ok) {
@@ -78,6 +80,7 @@ export function ClientGrid(props: ClientGridProps) {
 
   return (
     <>
+    <Button onClick={test}>refresh</Button>
       <ValidationErrorElement openAlert={openAlert} closeAlertCallback={() => setOpenAlert(false)} />
       <Table>
         <ClientGridHead />

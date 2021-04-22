@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Security.Claims;
 
 namespace CarRepair.API
 {
@@ -39,6 +40,15 @@ namespace CarRepair.API
                     .AddProfileService<IdentityProfileService>();
 
             services.AddAuthentication().AddIdentityServerJwt();
+
+            //TODO: figure out a way to make roles work by default
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdmin", policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Role, "Admin");
+                });
+            });
 
             services.AddControllers().AddJsonOptions(options =>
             {

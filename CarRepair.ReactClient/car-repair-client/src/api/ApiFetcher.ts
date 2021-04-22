@@ -12,7 +12,22 @@ export class ApiFetcher {
   }
 
   public static async getData<T>(path = "", queryParams?: URLSearchParams): Promise<T | null> {
-    const response = await fetch(this.baseURL + path + (queryParams?.toString() ?? ""));
+    let requestInit = {};
+      const token = this.getToken()
+      console.log(token)
+      if (token) {
+        const bearer = "Bearer " + token;
+        requestInit = {
+          method: "GET",
+          headers: {
+            Authorization: bearer,
+          }
+        };
+      } else
+        requestInit = {
+          method: "GET"
+        };
+    const response = await fetch(this.baseURL + path + (queryParams?.toString() ?? ""),requestInit);
     if (response.ok) {
       const data = await response.json();
       return data as T;

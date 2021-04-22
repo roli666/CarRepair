@@ -24,6 +24,7 @@ namespace CarRepair.API.Controllers
 
         // GET: <ClientController>
         [HttpGet]
+        [Authorize(Policy = "RequireAdmin")]
         public async Task<IActionResult> Get()
         {
             using (_db)
@@ -41,7 +42,6 @@ namespace CarRepair.API.Controllers
 
         // GET <ClientController>/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Get(int id)
         {
             using (_db)
