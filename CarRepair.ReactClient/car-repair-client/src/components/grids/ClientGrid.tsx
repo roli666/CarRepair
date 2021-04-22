@@ -192,12 +192,12 @@ function AddNewClientRow(props: AddNewClientRowProps) {
       Firstname: data.firstname,
       Lastname: data.lastname,
     };
-    // reset({
-    //   firstname: "",
-    //   lastname: "",
-    //   email: "",
-    //   phoneNumbers: [],
-    // });
+    reset({
+      firstname: "",
+      lastname: "",
+      email: "",
+      phoneNumbers: [],
+    });
     props.newClientCallback(client);
   };
 
@@ -256,7 +256,7 @@ function AddNewClientRow(props: AddNewClientRowProps) {
                 render={({ fieldState, field }) => (
                   <TextField
                     type={"tel"}
-                    label={"Phone number to add"}
+                    label={"Phone number"}
                     helperText={fieldState.error?.message ?? ""}
                     placeholder={"+36 59 425 967"}
                     error={fieldState.invalid}
