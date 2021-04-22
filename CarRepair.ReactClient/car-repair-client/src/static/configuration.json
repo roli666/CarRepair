@@ -2,5 +2,6 @@
     "APIHostname": "localhost",
     "APIProtocol": "https",
     "APIPort": 55001,
-    "WebSocketLogLevel": 1
+    "WebSocketLogLevel": 1,
+    "OIDC_ClientId": "react-client"
 }

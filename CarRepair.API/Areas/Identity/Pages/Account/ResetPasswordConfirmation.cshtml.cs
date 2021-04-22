@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CarRepair.API.Areas.Identity.Pages.Account
@@ -12,7 +8,6 @@ namespace CarRepair.API.Areas.Identity.Pages.Account
     {
         public void OnGet()
         {
-
         }
     }
 }

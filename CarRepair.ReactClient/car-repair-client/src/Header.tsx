@@ -1,6 +1,6 @@
 import { AppBar, Container, Grid, IconButton, ListItem, ListItemText, makeStyles, Menu, MenuItem, Toolbar } from "@material-ui/core";
 import { Home } from "@material-ui/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UsedRoutes } from "./Routes";
 import { useReactOidc } from "@axa-fr/react-oidc-context";
@@ -23,6 +23,11 @@ export function Header() {
   const { login, logout, oidcUser } = useReactOidc();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [adminMenuItemVisible, setAdminMenuItemVisible] = useState(oidcUser);
+
+  useEffect(()=>{
+    if(oidcUser)
+      console.log(oidcUser.state)
+  },[oidcUser])
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);

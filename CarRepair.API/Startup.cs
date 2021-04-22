@@ -1,10 +1,7 @@
 using CarRepair.API.Hubs;
 using CarRepair.Data;
 using CarRepair.Data.Models;
-using IdentityModel;
-using IdentityServer4;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Connections;
@@ -14,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using static IdentityModel.OidcConstants;
 
 namespace CarRepair.API
 {
@@ -36,42 +32,32 @@ namespace CarRepair.API
             else
                 services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(connectionString));
 
+            services.AddDefaultIdentity<CarRepairUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<CarRepairContext>();
+
+            services.AddIdentityServer()
+                    .AddApiAuthorization<CarRepairUser, CarRepairContext>()
+                    .AddProfileService<IdentityProfileService>();
+
+            services.AddAuthentication().AddIdentityServerJwt();
+
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
                 options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
+            services.AddRazorPages();
 
-            services.AddDefaultIdentity<CarRepairUser>().AddEntityFrameworkStores<CarRepairContext>();
-
-            services.AddIdentityServer().AddApiAuthorization<CarRepairUser, CarRepairContext>();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            }).AddIdentityServerJwt();
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.ClaimsIdentity.RoleClaimType = JwtClaimTypes.Role;
-            });
+            services.AddSignalR();
 
             services.AddCors(options =>
                 {
                     options.AddPolicy("localhostPolicy", builder =>
                         builder.WithOrigins("http://localhost:3000", "https://localhost:3000")
-                               .AllowCredentials()
                                .AllowAnyHeader()
                                .AllowAnyMethod()
                     );
                 }
             );
-
-            services.AddRazorPages();
-
-            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -86,20 +72,18 @@ namespace CarRepair.API
                 app.UseHsts();
             }
 
-            app.UseIdentityServer();
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
             app.UseCors("localhostPolicy");
 
+            app.UseAuthentication();
+            app.UseIdentityServer();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
-            {   //TODO: add require auth
+            {
                 endpoints.MapControllers();
                 endpoints.MapRazorPages();
                 endpoints.MapHub<StatusHub>("/status", options =>

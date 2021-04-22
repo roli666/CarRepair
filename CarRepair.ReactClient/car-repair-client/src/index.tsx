@@ -9,11 +9,12 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthenticationProvider, oidcLog } from "@axa-fr/react-oidc-context";
 import { UserManagerSettings } from "oidc-client";
 import { SignIn } from "SignIn";
+import configuration from "./static/configuration.json";
 
 const theme = createMuiTheme();
 const clientConfig: UserManagerSettings = {
   authority: "https://localhost:55001",
-  client_id: "react-client",
+  client_id: configuration.OIDC_ClientId,
   redirect_uri: "http://localhost:3000/sign-in",
   post_logout_redirect_uri: "http://localhost:3000/sign-out",
   silent_redirect_uri: "http://localhost:3000/sign-in",

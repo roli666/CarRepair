@@ -47,7 +47,6 @@ async function Initialize(): Promise<Client[]> {
 export function ClientGrid(props: ClientGridProps) {
   const [clients, setClients] = useState<Client[]>([]);
   const [openAlert, setOpenAlert] = useState(false);
-
   useEffect(() => {
     (async () => {
       setClients(await Initialize());
@@ -190,12 +189,12 @@ function AddNewClientRow(props: AddNewClientRowProps) {
       Firstname: data.firstname,
       Lastname: data.lastname,
     };
-    reset({
-      firstname: "",
-      lastname: "",
-      email: "",
-      phoneNumbers: [],
-    });
+    // reset({
+    //   firstname: "",
+    //   lastname: "",
+    //   email: "",
+    //   phoneNumbers: [],
+    // });
     props.newClientCallback(client);
   };
 

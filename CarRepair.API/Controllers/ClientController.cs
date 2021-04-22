@@ -1,5 +1,6 @@
 ﻿using CarRepair.Data;
 using CarRepair.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ namespace CarRepair.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    //[Authorize(Roles ="Admin")]
     public class ClientController : ControllerBase
     {
         private readonly ILogger<ClientController> _logger;
@@ -39,6 +41,7 @@ namespace CarRepair.API.Controllers
 
         // GET <ClientController>/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Get(int id)
         {
             using (_db)

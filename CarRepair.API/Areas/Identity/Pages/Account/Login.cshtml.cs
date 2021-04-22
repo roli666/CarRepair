@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using CarRepair.Data.Models;
+﻿using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace CarRepair.API.Areas.Identity.Pages.Account
 {
@@ -22,7 +20,7 @@ namespace CarRepair.API.Areas.Identity.Pages.Account
         private readonly SignInManager<CarRepairUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<CarRepairUser> signInManager, 
+        public LoginModel(SignInManager<CarRepairUser> signInManager,
             ILogger<LoginModel> logger,
             UserManager<CarRepairUser> userManager)
         {
@@ -36,6 +34,7 @@ namespace CarRepair.API.Areas.Identity.Pages.Account
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
+        [BindProperty]
         public string ReturnUrl { get; set; }
 
         [TempData]
@@ -77,7 +76,7 @@ namespace CarRepair.API.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
@@ -85,6 +84,16 @@ namespace CarRepair.API.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    if (user.IsAdmin)
+                    {
+                        var userClaims = await _userManager.GetClaimsAsync(user);
+                        var userRoles = await _userManager.GetRolesAsync(user);
+                        if (!userClaims.Select(c => c.Type).Any(type => type == ClaimTypes.Role))
+                            await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin"));
+                        if (!userRoles.Any(role => role == "Admin"))
+                            await _userManager.AddToRoleAsync(user, "Admin");
+                    }
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }

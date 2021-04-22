@@ -4,14 +4,16 @@ using CarRepair.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarRepair.Data.Migrations
 {
     [DbContext(typeof(CarRepairContext))]
-    partial class CarRepairContextModelSnapshot : ModelSnapshot
+    [Migration("20210420213914_AddedAdminRole")]
+    partial class AddedAdminRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,23 +114,6 @@ namespace CarRepair.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "5B909B9F-ED94-4973-B762-58EFD8C671DF",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "886b6ede-9c74-4703-8438-53e6870fa54c",
-                            Email = "admin@admin.com",
-                            EmailConfirmed = true,
-                            IsAdmin = true,
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEKRYx4VxgBR+iowDdqbzrTT+I4sDankgGn7ZfautKywpa0+/vOGm6WL+3WQZoTMjyQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "54c9b233-49cc-4c01-b267-b10f68f58031",
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("CarRepair.Data.Models.Client", b =>
@@ -326,15 +311,6 @@ namespace CarRepair.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "51C5B017-884C-4A59-8838-92A891F389AB",
-                            ConcurrencyStamp = "ae461381-1314-428b-8643-5cc8a4e1e8ca",
-                            Name = "Admin",
-                            NormalizedName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -422,13 +398,6 @@ namespace CarRepair.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "5B909B9F-ED94-4973-B762-58EFD8C671DF",
-                            RoleId = "51C5B017-884C-4A59-8838-92A891F389AB"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
