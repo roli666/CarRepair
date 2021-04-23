@@ -21,8 +21,7 @@ export function ValidationErrorElement(props: ValidationErrorProps) {
           props.closeAlertCallback();
         }}
       >
-        There was a server side validation error. Check the console for more
-        information or contact the developers if you think this is an unwanted
+        There was a server side validation error. Check the console for more information or contact the developers if you think this is an unwanted
         behaviour of the application.
       </Alert>
     </Collapse>

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { UsedRoutes } from "./Routes";
 import { useReactOidc } from "@axa-fr/react-oidc-context";
+import { ClaimTypes } from "./helpers/ClaimTypes";
 
 const useStyles = makeStyles({
   linkText: {
@@ -22,16 +23,15 @@ export function Header() {
   const classes = useStyles();
   const { login, logout, oidcUser } = useReactOidc();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [adminMenuItemVisible, setAdminMenuItemVisible] = useState(oidcUser);
-
-  useEffect(()=>{
-    if(oidcUser)
-      console.log(oidcUser.state)
-  },[oidcUser])
+  const [adminMenuItemVisible, setAdminMenuItemVisible] = useState(Boolean(oidcUser?.profile[ClaimTypes.role]));
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  useEffect(() => {
+    setAdminMenuItemVisible(Boolean(oidcUser?.profile[ClaimTypes.role]));
+  }, [oidcUser?.profile, oidcUser]);
 
   const handleClose = () => {
     setAnchorEl(null);
@@ -52,16 +52,18 @@ export function Header() {
             <Grid item component="nav" aria-labelledby="main navigation">
               <Grid container direction="row" alignItems="center" justify={"center"}>
                 <Grid item>
-                  <Link to={UsedRoutes.Home} className={classes.linkText}>
+                  <Link to={UsedRoutes.AvailableJobs} className={classes.linkText}>
                     <ListItem button>
-                      <ListItemText primary={"Home"} />
+                      <ListItemText primary={"Available Jobs"} className={classes.linkText} />
                     </ListItem>
                   </Link>
                 </Grid>
                 <Grid item>
-                  <ListItem button onClick={handleClick}>
-                    <ListItemText primary={"Admin"} className={classes.linkText} />
-                  </ListItem>
+                  {adminMenuItemVisible && (
+                    <ListItem button onClick={handleClick}>
+                      <ListItemText primary={"Admin"} className={classes.linkText} />
+                    </ListItem>
+                  )}
                 </Grid>
                 {oidcUser ? (
                   <Grid item>
@@ -82,9 +84,15 @@ export function Header() {
         </Container>
       </Toolbar>
       <Menu id="admin-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-          <MenuItem component={Link} to={UsedRoutes.ClientEditor} className={classes.subMenuItem} onClick={handleClose}>Client editor</MenuItem>
-          <MenuItem component={Link} to={UsedRoutes.CarEditor} className={classes.subMenuItem} onClick={handleClose}>Car editor</MenuItem>
-          <MenuItem component={Link} to={UsedRoutes.JobEditor} className={classes.subMenuItem} onClick={handleClose}>Job editor</MenuItem>
+        <MenuItem component={Link} to={UsedRoutes.ClientEditor} className={classes.subMenuItem} onClick={handleClose}>
+          Client editor
+        </MenuItem>
+        <MenuItem component={Link} to={UsedRoutes.CarEditor} className={classes.subMenuItem} onClick={handleClose}>
+          Car editor
+        </MenuItem>
+        <MenuItem component={Link} to={UsedRoutes.JobEditor} className={classes.subMenuItem} onClick={handleClose}>
+          Job editor
+        </MenuItem>
       </Menu>
     </AppBar>
   );

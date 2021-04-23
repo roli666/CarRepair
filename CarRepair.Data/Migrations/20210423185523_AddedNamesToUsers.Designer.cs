@@ -4,14 +4,16 @@ using CarRepair.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarRepair.Data.Migrations
 {
     [DbContext(typeof(CarRepairContext))]
-    partial class CarRepairContextModelSnapshot : ModelSnapshot
+    [Migration("20210423185523_AddedNamesToUsers")]
+    partial class AddedNamesToUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

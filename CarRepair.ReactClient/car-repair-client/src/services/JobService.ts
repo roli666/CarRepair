@@ -17,4 +17,10 @@ export class JobService {
   public static async updateJob(job: Job) {
     return await ApiFetcher.putData("/job", new URLSearchParams({ id: job.Id?.toString() ?? "" }), job);
   }
+  public static async startJob(jobId: number) {
+    return await ApiFetcher.putData(`/job/start/${jobId}`);
+  }
+  public static async finishJob(jobId: number) {
+    return await ApiFetcher.putData(`/job/finish/${jobId}`);
+  }
 }

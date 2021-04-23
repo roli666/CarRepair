@@ -1,9 +1,11 @@
 ﻿using CarRepair.Core.Models;
 using CarRepair.Data;
 using CarRepair.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading.Tasks;
 
 namespace CarRepair.API.Controllers
@@ -57,8 +59,67 @@ namespace CarRepair.API.Controllers
             }
         }
 
+        // PUT <JobController>/start/5
+        [HttpPut("start/{id}")]
+        [Authorize]
+        public async Task<IActionResult> StartJob(int id)
+        {
+            using (_db)
+            {
+                _logger.LogDebug("Starting job:{1} for user:{0}", User, id);
+
+                var job = await _db.Jobs
+                    .Include(j => j.Car)
+                    .ThenInclude(car => car.Owner)
+                    .ThenInclude(c => c.ContactInfo)
+                    .FirstOrDefaultAsync(job => job.Id == id);
+
+                var jobToUpdate = _db.Jobs.Attach(job);
+
+                if (job.Status == JobStatus.Awaiting)
+                {
+                    job.Started = DateTime.Now;
+                    job.Status = JobStatus.InProgress;
+                    await _db.SaveChangesAsync();
+                    return Ok(job);
+                }
+
+                return Ok();
+            }
+        }
+
+        // PUT <JobController>/start/5
+        [HttpPut("finish/{id}")]
+        [Authorize]
+        public async Task<IActionResult> FinishJob(int id)
+        {
+            using (_db)
+            {
+                _logger.LogDebug("Finishing job:{1} for user:{0}", User, id);
+
+                var job = await _db.Jobs
+                    .Include(j => j.Car)
+                    .ThenInclude(car => car.Owner)
+                    .ThenInclude(c => c.ContactInfo)
+                    .FirstOrDefaultAsync(job => job.Id == id);
+
+                var jobToUpdate = _db.Jobs.Attach(job);
+
+                if (job.Status == JobStatus.InProgress)
+                {
+                    job.Finished = DateTime.Now;
+                    job.Status = JobStatus.Done;
+                    await _db.SaveChangesAsync();
+                    return Ok(job);
+                }
+
+                return Ok();
+            }
+        }
+
         // POST <JobController>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Post([FromBody] JobMessage value)
         {
             using (_db)
@@ -67,7 +128,8 @@ namespace CarRepair.API.Controllers
 
                 var job = new Job
                 {
-                    CarId = value.CarId
+                    CarId = value.CarId,
+                    Description = value.Description
                 };
 
                 await _db.Jobs.AddAsync(job);

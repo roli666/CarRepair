@@ -1,9 +1,9 @@
 import { JobGrid } from "components/grids/JobGrid";
 
-export function Home() {
+export function AvailableJobs() {
   return (
     <div>
-      <h1>Home</h1>
+      <h1>Available jobs</h1>
       <JobGrid readOnly={true}></JobGrid>
     </div>
   );

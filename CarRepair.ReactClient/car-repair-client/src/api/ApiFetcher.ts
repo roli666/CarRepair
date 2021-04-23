@@ -13,21 +13,20 @@ export class ApiFetcher {
 
   public static async getData<T>(path = "", queryParams?: URLSearchParams): Promise<T | null> {
     let requestInit = {};
-      const token = this.getToken()
-      console.log(token)
-      if (token) {
-        const bearer = "Bearer " + token;
-        requestInit = {
-          method: "GET",
-          headers: {
-            Authorization: bearer,
-          }
-        };
-      } else
-        requestInit = {
-          method: "GET"
-        };
-    const response = await fetch(this.baseURL + path + (queryParams?.toString() ?? ""),requestInit);
+    const token = this.getToken();
+    if (token) {
+      const bearer = "Bearer " + token;
+      requestInit = {
+        method: "GET",
+        headers: {
+          Authorization: bearer,
+        },
+      };
+    } else
+      requestInit = {
+        method: "GET",
+      };
+    const response = await fetch(this.baseURL + path + (queryParams?.toString() ?? ""), requestInit);
     if (response.ok) {
       const data = await response.json();
       return data as T;
@@ -38,8 +37,7 @@ export class ApiFetcher {
   public static async postData(path = "", data = {}): Promise<Response> {
     try {
       let requestInit = {};
-      const token = this.getToken()
-      console.log(token)
+      const token = this.getToken();
       if (token) {
         const bearer = "Bearer " + token;
         requestInit = {
@@ -71,14 +69,28 @@ export class ApiFetcher {
   }
 
   public static async putData(path = "", queryParams?: URLSearchParams, data = {}): Promise<Response> {
-    // Default options are marked with *
-    const response = await fetch(this.baseURL + path + (queryParams?.toString() ?? ""), {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    let requestInit = {};
+    const token = this.getToken();
+    if (token) {
+      const bearer = "Bearer " + token;
+      requestInit = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: bearer,
+        },
+        body: JSON.stringify(data),
+      };
+    } else
+      requestInit = {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      };
+
+    const response = await fetch(this.baseURL + path + (queryParams?.toString() ?? ""), requestInit);
     if (response.ok) {
       return response;
     }
@@ -86,10 +98,22 @@ export class ApiFetcher {
   }
 
   public static async deleteData(path = "", queryParams?: URLSearchParams): Promise<Response> {
-    // Default options are marked with *
-    const response = await fetch(this.baseURL + path + (queryParams?.toString() ?? ""), {
-      method: "DELETE",
-    });
+    let requestInit = {};
+    const token = this.getToken();
+    if (token) {
+      const bearer = "Bearer " + token;
+      requestInit = {
+        method: "DELETE",
+        headers: {
+          Authorization: bearer,
+        },
+      };
+    } else
+      requestInit = {
+        method: "DELETE",
+      };
+
+    const response = await fetch(this.baseURL + path + (queryParams?.toString() ?? ""), requestInit);
     if (response.ok) {
       return response;
     }

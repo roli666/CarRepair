@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Popover, Typography } from "@material-ui/core";
+import { Button, ButtonProps, Popover, Typography } from "@material-ui/core";
 
 interface ConfirmationButtonProps {
   onConfirm: () => void;
@@ -19,7 +19,7 @@ export function ConfirmationButton(props: ConfirmationButtonProps) {
   const open = Boolean(anchorEl);
   return (
     <>
-      {React.isValidElement(props.as) && React.cloneElement(props.as, { onClick: handleClick } as any)}
+      {React.isValidElement(props.as) && React.cloneElement(props.as, { onClick: handleClick } as ButtonProps)}
       <Popover open={open} anchorEl={anchorEl} onClose={handleClose}>
         <Typography align={"center"}>Are you sure?</Typography>
         <Button color="primary" onClick={() => props.onConfirm()}>

@@ -53,8 +53,6 @@ export function ClientGrid(props: ClientGridProps) {
     })();
   }, []);
 
-  const test = async ()=>setClients(await Initialize());
-
   const addClient = async (client: Client) => {
     const result = await ClientService.saveClient(client);
     if (result.ok) {
@@ -80,7 +78,6 @@ export function ClientGrid(props: ClientGridProps) {
 
   return (
     <>
-    <Button onClick={test}>refresh</Button>
       <ValidationErrorElement openAlert={openAlert} closeAlertCallback={() => setOpenAlert(false)} />
       <Table>
         <ClientGridHead />
@@ -220,6 +217,7 @@ function AddNewClientRow(props: AddNewClientRowProps) {
               onChange={(e) => field.onChange(e.target.value)}
               defaultValue={field.value}
               label={"E-mail address"}
+              value={field.value}
               helperText={fieldState.error?.message ?? ""}
               error={fieldState.invalid}
             />
@@ -260,6 +258,7 @@ function AddNewClientRow(props: AddNewClientRowProps) {
                     helperText={fieldState.error?.message ?? ""}
                     placeholder={"+36 59 425 967"}
                     error={fieldState.invalid}
+                    value={field.value}
                     onChange={(e) => field.onChange(e.target.value)}
                     defaultValue={field.value}
                   />
@@ -298,6 +297,7 @@ function AddNewClientRow(props: AddNewClientRowProps) {
               required={true}
               type={"text"}
               label={"Lastname"}
+              value={field.value}
               helperText={fieldState.error?.message ?? ""}
               error={fieldState.invalid}
               onChange={(e) => field.onChange(e.target.value)}
@@ -318,6 +318,7 @@ function AddNewClientRow(props: AddNewClientRowProps) {
               required={true}
               type={"text"}
               label={"Firstname"}
+              value={field.value}
               helperText={fieldState.error?.message ?? ""}
               error={fieldState.invalid}
               onChange={(e) => field.onChange(e.target.value)}

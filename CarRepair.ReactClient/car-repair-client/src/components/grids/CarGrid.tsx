@@ -21,8 +21,7 @@ import { Client } from "api/models/Client";
 import { ValidationError } from "api/models/ValidationError";
 import { ConfirmationButton } from "components/ConfirmationButton";
 import { ValidationErrorElement } from "components/ErrorHandler";
-import { StatusContext } from "components/Status";
-import React, { BaseSyntheticEvent, useContext, useEffect, useState } from "react";
+import React, { BaseSyntheticEvent, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { UsedRoutes } from "Routes";
@@ -55,20 +54,12 @@ async function Initialize(): Promise<Car[]> {
 export function CarGrid(props: CarGridProps) {
   const [cars, setCars] = useState<Car[]>([]);
   const [openAlert, setOpenAlert] = useState(false);
-  const apiIsAlive = useContext(StatusContext);
 
   useEffect(() => {
     (async () => {
       setCars(await Initialize());
     })();
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      console.log("apistatus called + " + apiIsAlive);
-      if (apiIsAlive) setCars(await Initialize());
-    })();
-  }, [apiIsAlive]);
 
   const addCar = async (car: CarMessage) => {
     const result = await CarService.saveCar(car);
@@ -134,7 +125,7 @@ function CarGridBody(props: CarGridBodyProps) {
           <TableCell>{row.Owner.Lastname + row.Owner.Firstname}</TableCell>
           <TableCell>{row.Type}</TableCell>
           <TableCell>
-          <ConfirmationButton
+            <ConfirmationButton
               as={
                 <IconButton>
                   <Cancel />
@@ -184,7 +175,6 @@ function AddNewCarRow(props: AddNewCarRowProps) {
       OwnerId: data.ownerId,
       Type: data.type,
     };
-    console.log(car);
     reset({
       licencePlate: "",
       type: "",
@@ -211,6 +201,7 @@ function AddNewCarRow(props: AddNewCarRowProps) {
               placeholder={"ABC-123"}
               onChange={(e) => field.onChange(e.target.value)}
               defaultValue={field.value}
+              value={field.value}
               label={"Licence plate"}
               helperText={fieldState.error?.message ?? ""}
               error={fieldState.invalid}
@@ -235,6 +226,7 @@ function AddNewCarRow(props: AddNewCarRowProps) {
                 error={fieldState.invalid}
                 onChange={(e) => field.onChange(e.target.value)}
                 defaultValue={""}
+                value={field.value}
               >
                 <MenuItem>
                   <Link to={UsedRoutes.ClientEditor} className={classes.buttonLinkText}>
@@ -275,6 +267,7 @@ function AddNewCarRow(props: AddNewCarRowProps) {
               error={fieldState.invalid}
               onChange={(e) => field.onChange(e.target.value)}
               defaultValue={field.value}
+              value={field.value}
             />
           )}
           rules={{

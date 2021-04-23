@@ -2,6 +2,7 @@ import { CarEditor } from "components/CarEditor";
 import { ClientEditor } from "components/ClientEditor";
 import { JobEditor } from "components/JobEditor";
 import { Home } from "Home";
+import { AvailableJobs } from "AvailableJobs";
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { SignIn } from "SignIn";
@@ -12,6 +13,7 @@ export enum UsedRoutes {
   JobEditor = "/job-editor",
   CarEditor = "/car-editor",
   ClientEditor = "/client-editor",
+  AvailableJobs = "/available-jobs",
 }
 
 export function Routes() {
@@ -24,6 +26,7 @@ export function Routes() {
       <Route path={UsedRoutes.CarEditor} component={CarEditor} />
       <Route path={UsedRoutes.ClientEditor} component={ClientEditor} />
       <Route path={UsedRoutes.Home} component={Home} />
+      <Route path={UsedRoutes.AvailableJobs} component={AvailableJobs} />
       <Route path="/sign-in" component={SignIn} />
       <Route path="/sign-out" component={SignOut} />
     </>

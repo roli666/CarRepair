@@ -1,6 +1,7 @@
 ﻿using CarRepair.Core.Models;
 using CarRepair.Data;
 using CarRepair.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -23,6 +24,7 @@ namespace CarRepair.API.Controllers
 
         // GET: <CarController>
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Get()
         {
             using (_db)
@@ -41,6 +43,7 @@ namespace CarRepair.API.Controllers
 
         // GET <CarController>/5
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> Get(int id)
         {
             using (_db)
@@ -59,6 +62,7 @@ namespace CarRepair.API.Controllers
 
         // POST <CarController>
         [HttpPost]
+        [Authorize(Policy = "RequireAdmin")]
         public async Task<IActionResult> Post([FromBody] CarMessage value)
         {
             using (_db)
@@ -82,6 +86,7 @@ namespace CarRepair.API.Controllers
 
         // PUT <CarController>/5
         [HttpPut("{id}")]
+        [Authorize(Policy = "RequireAdmin")]
         public async Task<IActionResult> Put(int id, [FromBody] Car value)
         {
             using (_db)
@@ -105,6 +110,7 @@ namespace CarRepair.API.Controllers
 
         // DELETE <CarController>/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = "RequireAdmin")]
         public async Task<IActionResult> Delete(int id)
         {
             using (_db)

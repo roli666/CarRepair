@@ -13,7 +13,9 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
   Theme,
+  Typography,
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import React, { BaseSyntheticEvent, useEffect, useState } from "react";
@@ -75,6 +77,28 @@ export function JobGrid(props: JobGridProps) {
       }
     }
   };
+  const startJob = async (job: Job) => {
+    if (job.Id) {
+      const result = await JobService.startJob(job.Id);
+      if (result.ok) {
+        const resJob = (await result.json()) as Job;
+        const jobToUpdate = jobs.findIndex((j) => j.Id === job.Id);
+        if (jobToUpdate) jobs[jobToUpdate] = resJob;
+        setJobs([...jobs]);
+      }
+    }
+  };
+  const finishJob = async (job: Job) => {
+    if (job.Id) {
+      const result = await JobService.finishJob(job.Id);
+      if (result.ok) {
+        const resJob = (await result.json()) as Job;
+        const jobToUpdate = jobs.findIndex((j) => j.Id === job.Id);
+        if (jobToUpdate) jobs[jobToUpdate] = resJob;
+        setJobs([...jobs]);
+      }
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -87,7 +111,14 @@ export function JobGrid(props: JobGridProps) {
       <ValidationErrorElement openAlert={openAlert} closeAlertCallback={() => setOpenAlert(false)} />
       <Table>
         <JobGridHead></JobGridHead>
-        <JobGridBody readonly={props.readOnly ?? false} newJobCallback={addJob} deleteJobCallback={deleteJob} data={jobs}></JobGridBody>
+        <JobGridBody
+          readonly={props.readOnly ?? false}
+          startJobCallback={startJob}
+          finishJobCallback={finishJob}
+          newJobCallback={addJob}
+          deleteJobCallback={deleteJob}
+          data={jobs}
+        ></JobGridBody>
       </Table>
     </>
   );
@@ -99,6 +130,7 @@ function JobGridHead() {
       <TableRow>
         <TableCell>Job Id</TableCell>
         <TableCell>Car</TableCell>
+        <TableCell>Description</TableCell>
         <TableCell>Registered on</TableCell>
         <TableCell>Started on</TableCell>
         <TableCell>Finished on</TableCell>
@@ -113,19 +145,38 @@ interface JobGridBodyProps {
   readonly: boolean;
   newJobCallback: (job: JobMessage) => void;
   deleteJobCallback: (job: Job) => void;
+  startJobCallback: (job: Job) => void;
+  finishJobCallback: (job: Job) => void;
 }
 
 function JobGridBody(props: JobGridBodyProps) {
+  const [jobs, setJobs] = useState<Job[]>(props.data);
+  useEffect(() => {
+    setJobs([...props.data]);
+  }, [props.data]);
   return (
     <TableBody>
-      {props.data.map((row) => (
+      {jobs.map((row) => (
         <TableRow key={row.Id}>
           <TableCell>{row.Id}</TableCell>
           <TableCell>{row.Car.LicencePlate}</TableCell>
+          <TableCell>{row.Description}</TableCell>
           <TableCell>{new Date(row.Registered).toLocaleDateString("hu-hu")}</TableCell>
           <TableCell>{row.Started ? new Date(row.Started)?.toLocaleDateString("hu-hu") : "Not started yet"}</TableCell>
           <TableCell>{row.Finished ? new Date(row.Finished)?.toLocaleDateString("hu-hu") : "Not finished yet"}</TableCell>
-          <TableCell>{JobStatus[row.Status]}</TableCell>
+          <TableCell>
+            {(row.Status === JobStatus.Awaiting && (
+              <Button variant={"contained"} color={"primary"} onClick={() => props.startJobCallback(row)}>
+                Start job
+              </Button>
+            )) ||
+              (row.Status === JobStatus.InProgress && (
+                <Button variant={"contained"} color={"primary"} onClick={() => props.finishJobCallback(row)}>
+                  Finish job
+                </Button>
+              )) ||
+              (row.Status === JobStatus.Done && <Typography>Finished</Typography>)}
+          </TableCell>
         </TableRow>
       ))}
       {!props.readonly && <AddNewJobRow newJobCallback={props.newJobCallback} />}
@@ -138,6 +189,7 @@ interface AddNewJobRowProps {
 }
 type IJobInput = {
   carId: number;
+  description: string;
 };
 function AddNewJobRow(props: AddNewJobRowProps) {
   const classes = useStyles();
@@ -153,6 +205,7 @@ function AddNewJobRow(props: AddNewJobRowProps) {
   const { handleSubmit, reset, control } = useForm<IJobInput>({
     defaultValues: {
       carId: 0,
+      description: "",
     },
     reValidateMode: "onChange",
   });
@@ -160,11 +213,9 @@ function AddNewJobRow(props: AddNewJobRowProps) {
   const onJobSubmit = async (data: IJobInput, event?: BaseSyntheticEvent) => {
     const job: JobMessage = {
       CarId: data.carId,
+      Description: data.description,
     };
-    console.log(job);
-    reset({
-      carId: 0,
-    });
+    reset();
     props.newJobCallback(job);
   };
 
@@ -181,14 +232,15 @@ function AddNewJobRow(props: AddNewJobRowProps) {
           control={control}
           render={({ fieldState, field }) => (
             <FormControl className={classes.formControl}>
-              <InputLabel>Owner</InputLabel>
+              <InputLabel>Car</InputLabel>
               <Select
                 required={true}
                 type={"select"}
-                label={"Owner"}
+                label={"Car"}
                 error={fieldState.invalid}
                 onChange={(e) => field.onChange(e.target.value)}
                 defaultValue={""}
+                value={field.value}
               >
                 <MenuItem>
                   <Link to={UsedRoutes.CarEditor} className={classes.buttonLinkText}>
@@ -211,6 +263,31 @@ function AddNewJobRow(props: AddNewJobRowProps) {
           rules={{
             validate: {
               mustNotBeEmpty: (value) => value !== "" || "Every job must have a car.",
+            },
+          }}
+        />
+      </TableCell>
+      <TableCell>
+        <Controller
+          name="description"
+          control={control}
+          render={({ fieldState, field }) => (
+            <TextField
+              multiline
+              required={true}
+              placeholder={"ex.: has no engine"}
+              onChange={(e) => field.onChange(e.target.value)}
+              defaultValue={field.value}
+              value={field.value}
+              label={"Description"}
+              helperText={fieldState.error?.message ?? ""}
+              error={fieldState.invalid}
+            />
+          )}
+          rules={{
+            required: "The description field is required.",
+            validate: {
+              atLeast5Chars: (value) => value.length >= 5 || "Description must be at least 5 characters long.",
             },
           }}
         />
