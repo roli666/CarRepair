@@ -158,7 +158,6 @@ function AddNewClientRow(props: AddNewClientRowProps) {
     reset,
     control,
     formState: { errors },
-    formState,
     setError,
     clearErrors,
   } = useForm<IClientInput>({
@@ -170,20 +169,15 @@ function AddNewClientRow(props: AddNewClientRowProps) {
     },
     reValidateMode: "onChange",
   });
-  const { isValidating } = formState;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "phoneNumbers",
   });
 
   useEffect(() => {
-    console.log("validatingss");
-    if (isValidating) {
-      console.log("validating");
-      if (!fields.length) setError("phoneNumbers", { message: "There must be at least one phone number per client." });
-      else clearErrors("phoneNumbers");
-    }
-  }, [clearErrors, fields.length, isValidating, setError]);
+    if (!fields.length) setError("phoneNumbers", { message: "There must be at least one phone number per client." });
+    else clearErrors("phoneNumbers");
+  }, [clearErrors, fields.length, setError]);
 
   const onClientSubmit = async (data: IClientInput, event?: BaseSyntheticEvent) => {
     const client: Client = {

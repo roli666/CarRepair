@@ -3,5 +3,11 @@
     "APIProtocol": "https",
     "APIPort": 55001,
     "WebSocketLogLevel": 1,
-    "OIDC_ClientId": "react-client"
+    "OIDC_Authority": "https://localhost:55001",
+    "OIDC_ClientId": "react-client",
+    "OIDC_RedirectURI": "http://localhost:3000/sign-in",
+    "OIDC_PostLogoutRedirectURI": "http://localhost:3000/sign-out",
+    "OIDC_SilentRedirectURI": "http://localhost:3000/sign-in",
+    "OIDC_ResponseType": "code",
+    "OIDC_Scope": "api CarRepair.APIAPI openid profile"
 }

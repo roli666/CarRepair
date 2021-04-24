@@ -12,13 +12,13 @@ import configuration from "./static/configuration.json";
 
 const theme = createMuiTheme();
 const clientConfig: UserManagerSettings = {
-  authority: "https://localhost:55001",
+  authority: configuration.OIDC_Authority,
   client_id: configuration.OIDC_ClientId,
-  redirect_uri: "http://localhost:3000/sign-in",
-  post_logout_redirect_uri: "http://localhost:3000/sign-out",
-  silent_redirect_uri: "http://localhost:3000/sign-in",
-  response_type: "code",
-  scope: "api CarRepair.APIAPI openid profile",
+  redirect_uri: configuration.OIDC_RedirectURI,
+  post_logout_redirect_uri: configuration.OIDC_PostLogoutRedirectURI,
+  silent_redirect_uri: configuration.OIDC_SilentRedirectURI,
+  response_type: configuration.OIDC_ResponseType,
+  scope: configuration.OIDC_Scope,
 };
 
 ReactDOM.render(

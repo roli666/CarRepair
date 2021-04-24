@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CarRepair.API.Controllers
@@ -29,7 +30,7 @@ namespace CarRepair.API.Controllers
             {
                 _logger.LogDebug("Sending users for user:{0}", User);
 
-                var users = await _db.Users.ToListAsync();
+                var users = await _db.Users.Where(user => !user.IsAdmin).ToListAsync();
 
                 return Ok(users);
             }

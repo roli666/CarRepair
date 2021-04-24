@@ -28,6 +28,8 @@ import { ValidationError } from "api/models/ValidationError";
 import { ValidationErrorElement } from "components/ErrorHandler";
 import { Link } from "react-router-dom";
 import { UsedRoutes } from "Routes";
+import { CarRepairUser } from "api/models/CarRepairUser";
+import CarRepairUserService from "services/CarRepairUserService";
 
 class JobGridProps {
   readOnly?: boolean = false;
@@ -160,11 +162,14 @@ function JobGridBody(props: JobGridBodyProps) {
       {jobs.map((row) => (
         <TableRow key={row.Id}>
           <TableCell>{row.Id}</TableCell>
-          <TableCell>{row.Car.LicencePlate}</TableCell>
-          <TableCell>{row.Description}</TableCell>
-          <TableCell>{new Date(row.Registered).toLocaleDateString("hu-hu")}</TableCell>
-          <TableCell>{row.Started ? new Date(row.Started)?.toLocaleDateString("hu-hu") : "Not started yet"}</TableCell>
-          <TableCell>{row.Finished ? new Date(row.Finished)?.toLocaleDateString("hu-hu") : "Not finished yet"}</TableCell>
+          <TableCell style={{maxWidth:"100px",overflowWrap: "break-word"}}>{row.Car.LicencePlate}</TableCell>
+          <TableCell style={{maxWidth:"150px",overflowWrap: "break-word"}}>{row.Description}</TableCell>
+          <TableCell style={{maxWidth:"150px",overflowWrap: "break-word"}}>
+            {row.AssignedTo ? `${row.AssignedTo.Email} - ${row.AssignedTo.Lastname} ${row.AssignedTo.Firstname}` : "Not assigned yet"}
+          </TableCell>
+          <TableCell style={{minWidth:"100px",overflowWrap: "break-word"}}>{new Date(row.Registered).toLocaleDateString("hu-hu")}</TableCell>
+          <TableCell style={{minWidth:"100px",overflowWrap: "break-word"}}>{row.Started ? new Date(row.Started)?.toLocaleDateString("hu-hu") : "Not started yet"}</TableCell>
+          <TableCell style={{minWidth:"110px",overflowWrap: "break-word"}}>{row.Finished ? new Date(row.Finished)?.toLocaleDateString("hu-hu") : "Not finished yet"}</TableCell>
           <TableCell>
             {(row.Status === JobStatus.Awaiting && (
               <Button variant={"contained"} color={"primary"} onClick={() => props.startJobCallback(row)}>
@@ -196,11 +201,14 @@ type IJobInput = {
 function AddNewJobRow(props: AddNewJobRowProps) {
   const classes = useStyles();
   const [availableCars, setAvailableCars] = useState<Car[]>([]);
+  const [availableCarRepairUsers, setAvailableCarRepairUsers] = useState<CarRepairUser[]>([]);
 
   useEffect(() => {
     (async () => {
       const cars = await CarService.getAvailableCars();
+      const users = await CarRepairUserService.getAvailableUsers();
       if (cars) setAvailableCars(cars);
+      if (users) setAvailableCarRepairUsers(users);
     })();
   }, []);
 
@@ -264,7 +272,7 @@ function AddNewJobRow(props: AddNewJobRowProps) {
           )}
           rules={{
             validate: {
-              mustNotBeEmpty: (value) => value !== "" || "Every job must have a car.",
+              mustNotBeEmpty: (value) => value !== 0 || "Every job must have a car.",
             },
           }}
         />
@@ -309,9 +317,9 @@ function AddNewJobRow(props: AddNewJobRowProps) {
                 value={field.value}
               >
                 <MenuItem value={""}>No assignee</MenuItem>
-                {availableCars.map((car, index) => (
-                  <MenuItem key={index} value={car.Id}>
-                    {`${car.LicencePlate} ${car.Type}`}
+                {availableCarRepairUsers.map((user, index) => (
+                  <MenuItem key={index} value={user.Id}>
+                    {`${user.Email} - ${user.Lastname} ${user.Firstname}`}
                   </MenuItem>
                 ))}
               </Select>

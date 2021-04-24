@@ -90,11 +90,11 @@ namespace CarRepair.API.Controllers
                     {
                         var user = await _userManager.GetUserAsync(User);
                         job.AssignedTo = user;
+                        job.AssignedToId = user.Id;
                     }
                     await _db.SaveChangesAsync();
                     return Ok(job);
                 }
-
                 return Ok();
             }
         }

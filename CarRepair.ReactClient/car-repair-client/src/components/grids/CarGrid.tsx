@@ -246,7 +246,7 @@ function AddNewCarRow(props: AddNewCarRowProps) {
           )}
           rules={{
             validate: {
-              mustNotBeEmpty: (value) => value !== "" || "Every car must have an owner.",
+              mustNotBeEmpty: (value) => value !== 0 || "Every car must have an owner.",
             },
           }}
         />
