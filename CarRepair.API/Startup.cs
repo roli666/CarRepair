@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Security.Claims;
 
 namespace CarRepair.API
@@ -25,12 +24,7 @@ namespace CarRepair.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
-
-            if (string.IsNullOrEmpty(connectionString))
-                services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("MigrationConnection")));
-            else
-                services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(connectionString));
+            services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(Configuration.GetConnectionString("DBConnection")));
 
             services.AddDefaultIdentity<CarRepairUser>().AddEntityFrameworkStores<CarRepairContext>();
 
@@ -40,7 +34,6 @@ namespace CarRepair.API
 
             services.AddAuthentication().AddIdentityServerJwt();
 
-            //TODO: figure out a way to make roles work by default
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireAdmin", policy =>
