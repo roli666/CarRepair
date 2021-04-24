@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Container } from "@material-ui/core";
-import { JobGrid } from "./grids/JobGrid";
+import JobGrid from "./components/grids/JobGrid";
 
-export function JobEditor() {
+function JobEditor() {
   //initialization
   useEffect(() => {
     (async () => {})();
@@ -15,3 +15,5 @@ export function JobEditor() {
     </Container>
   );
 }
+
+export default JobEditor;

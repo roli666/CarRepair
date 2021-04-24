@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Container } from "@material-ui/core";
-import { ClientGrid } from "./grids/ClientGrid";
+import ClientGrid from "./components/grids/ClientGrid";
 
-export function ClientEditor() {
+function ClientEditor() {
   //initialization
   useEffect(() => {
     (async () => {})();
@@ -15,3 +15,5 @@ export function ClientEditor() {
     </Container>
   );
 }
+
+export default ClientEditor;

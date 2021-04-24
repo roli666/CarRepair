@@ -11,6 +11,8 @@ namespace CarRepair.Core.Models
         [Required]
         public int CarId { get; set; }
 
+        public string AssignedToId { get; set; }
+
         [Required]
         public DateTime Registered { get; set; } = DateTime.Now;
 

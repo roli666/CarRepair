@@ -86,13 +86,10 @@ namespace CarRepair.API.Areas.Identity.Pages.Account
                 {
                     var user = await _userManager.FindByEmailAsync(Input.Email);
                     var userClaims = await _userManager.GetClaimsAsync(user);
-                    var userRoles = await _userManager.GetRolesAsync(user);
                     if (user.IsAdmin)
                     {
                         if (!userClaims.Select(c => c.Type).Any(type => type == ClaimTypes.Role))
                             await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin"));
-                        //if (!userRoles.Any(role => role == "Admin"))
-                        //    await _userManager.AddToRoleAsync(user, "Admin");
                     }
                     if (!userClaims.Select(c => c.Type).Any(type => type == ClaimTypes.GivenName))
                         await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.GivenName, user.Firstname));

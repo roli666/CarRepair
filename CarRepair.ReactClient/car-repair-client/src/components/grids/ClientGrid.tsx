@@ -15,14 +15,14 @@ import {
 } from "@material-ui/core";
 import { Add, Cancel } from "@material-ui/icons";
 import { ValidationError } from "api/models/ValidationError";
-import React, { BaseSyntheticEvent, useEffect, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
-import { Client } from "../../api/models/Client";
-import { ClientService } from "../../services/ClientService";
+import { Client } from "api/models/Client";
+import ClientService from "services/ClientService";
 import { ValidationErrorElement } from "../ErrorHandler";
 import { ConfirmationButton } from "../ConfirmationButton";
-import { EmailValidation, PhoneNumberValidation } from "../../helpers/Regex";
+import { EmailValidation, PhoneNumberValidation } from "helpers/Regex";
 import { PhoneContact } from "api/models/ContactInfo";
 
 const useStyle = makeStyles({
@@ -44,7 +44,7 @@ async function Initialize(): Promise<Client[]> {
   return result ?? [];
 }
 
-export function ClientGrid(props: ClientGridProps) {
+function ClientGrid(props: ClientGridProps) {
   const [clients, setClients] = useState<Client[]>([]);
   const [openAlert, setOpenAlert] = useState(false);
   useEffect(() => {
@@ -158,6 +158,7 @@ function AddNewClientRow(props: AddNewClientRowProps) {
     reset,
     control,
     formState: { errors },
+    formState,
     setError,
     clearErrors,
   } = useForm<IClientInput>({
@@ -169,16 +170,20 @@ function AddNewClientRow(props: AddNewClientRowProps) {
     },
     reValidateMode: "onChange",
   });
-
+  const { isValidating } = formState;
   const { fields, append, remove } = useFieldArray({
     control,
     name: "phoneNumbers",
   });
 
   useEffect(() => {
-    if (!fields.length) setError("phoneNumbers", { message: "There must be at least one phone number per client." });
-    else clearErrors("phoneNumbers");
-  }, [clearErrors, fields, setError]);
+    console.log("validatingss");
+    if (isValidating) {
+      console.log("validating");
+      if (!fields.length) setError("phoneNumbers", { message: "There must be at least one phone number per client." });
+      else clearErrors("phoneNumbers");
+    }
+  }, [clearErrors, fields.length, isValidating, setError]);
 
   const onClientSubmit = async (data: IClientInput, event?: BaseSyntheticEvent) => {
     const client: Client = {
@@ -215,7 +220,6 @@ function AddNewClientRow(props: AddNewClientRowProps) {
               required={true}
               placeholder={"ex.: john@domain.com"}
               onChange={(e) => field.onChange(e.target.value)}
-              defaultValue={field.value}
               label={"E-mail address"}
               value={field.value}
               helperText={fieldState.error?.message ?? ""}
@@ -260,7 +264,6 @@ function AddNewClientRow(props: AddNewClientRowProps) {
                     error={fieldState.invalid}
                     value={field.value}
                     onChange={(e) => field.onChange(e.target.value)}
-                    defaultValue={field.value}
                   />
                 )}
                 rules={{
@@ -301,7 +304,6 @@ function AddNewClientRow(props: AddNewClientRowProps) {
               helperText={fieldState.error?.message ?? ""}
               error={fieldState.invalid}
               onChange={(e) => field.onChange(e.target.value)}
-              defaultValue={field.value}
             />
           )}
           rules={{
@@ -322,7 +324,6 @@ function AddNewClientRow(props: AddNewClientRowProps) {
               helperText={fieldState.error?.message ?? ""}
               error={fieldState.invalid}
               onChange={(e) => field.onChange(e.target.value)}
-              defaultValue={field.value}
             />
           )}
           rules={{
@@ -333,3 +334,5 @@ function AddNewClientRow(props: AddNewClientRowProps) {
     </TableRow>
   );
 }
+
+export default ClientGrid;

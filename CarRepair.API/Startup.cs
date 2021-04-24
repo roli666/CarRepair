@@ -33,7 +33,7 @@ namespace CarRepair.API
             else
                 services.AddDbContext<CarRepairContext>(opts => opts.UseSqlServer(connectionString));
 
-            services.AddDefaultIdentity<CarRepairUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<CarRepairContext>();
+            services.AddDefaultIdentity<CarRepairUser>().AddEntityFrameworkStores<CarRepairContext>();
 
             services.AddIdentityServer()
                     .AddApiAuthorization<CarRepairUser, CarRepairContext>()

@@ -1,5 +1,4 @@
 import { AppBar, Container, Grid, Typography } from "@material-ui/core";
-import React from "react";
 import { Status } from "./components/Status";
 
 export function Footer() {

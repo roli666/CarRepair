@@ -19,9 +19,9 @@ import {
 } from "@material-ui/core";
 import { Add } from "@material-ui/icons";
 import React, { BaseSyntheticEvent, useEffect, useState } from "react";
-import { JobService } from "../../services/JobService";
-import { Job, JobMessage, JobStatus } from "../../api/models/Job";
-import { CarService } from "services/CarService";
+import JobService from "services/JobService";
+import { Job, JobMessage, JobStatus } from "api/models/Job";
+import CarService from "services/CarService";
 import { Car } from "api/models/Car";
 import { Controller, useForm } from "react-hook-form";
 import { ValidationError } from "api/models/ValidationError";
@@ -51,7 +51,7 @@ async function Initialize(): Promise<Job[]> {
   return result ?? [];
 }
 
-export function JobGrid(props: JobGridProps) {
+function JobGrid(props: JobGridProps) {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [openAlert, setOpenAlert] = useState(false);
 
@@ -131,6 +131,7 @@ function JobGridHead() {
         <TableCell>Job Id</TableCell>
         <TableCell>Car</TableCell>
         <TableCell>Description</TableCell>
+        <TableCell>Assigned To</TableCell>
         <TableCell>Registered on</TableCell>
         <TableCell>Started on</TableCell>
         <TableCell>Finished on</TableCell>
@@ -190,6 +191,7 @@ interface AddNewJobRowProps {
 type IJobInput = {
   carId: number;
   description: string;
+  assignedToId?: string;
 };
 function AddNewJobRow(props: AddNewJobRowProps) {
   const classes = useStyles();
@@ -214,6 +216,7 @@ function AddNewJobRow(props: AddNewJobRowProps) {
     const job: JobMessage = {
       CarId: data.carId,
       Description: data.description,
+      AssignedToId: data.assignedToId,
     };
     reset();
     props.newJobCallback(job);
@@ -239,7 +242,6 @@ function AddNewJobRow(props: AddNewJobRowProps) {
                 label={"Car"}
                 error={fieldState.invalid}
                 onChange={(e) => field.onChange(e.target.value)}
-                defaultValue={""}
                 value={field.value}
               >
                 <MenuItem>
@@ -277,7 +279,6 @@ function AddNewJobRow(props: AddNewJobRowProps) {
               required={true}
               placeholder={"ex.: has no engine"}
               onChange={(e) => field.onChange(e.target.value)}
-              defaultValue={field.value}
               value={field.value}
               label={"Description"}
               helperText={fieldState.error?.message ?? ""}
@@ -292,6 +293,35 @@ function AddNewJobRow(props: AddNewJobRowProps) {
           }}
         />
       </TableCell>
+      <TableCell>
+        <Controller
+          name="assignedToId"
+          control={control}
+          render={({ fieldState, field }) => (
+            <FormControl className={classes.formControl}>
+              <InputLabel>Assigned To</InputLabel>
+              <Select
+                required={true}
+                type={"select"}
+                label={"Assigned To"}
+                error={fieldState.invalid}
+                onChange={(e) => field.onChange(e.target.value)}
+                value={field.value}
+              >
+                <MenuItem value={""}>No assignee</MenuItem>
+                {availableCars.map((car, index) => (
+                  <MenuItem key={index} value={car.Id}>
+                    {`${car.LicencePlate} ${car.Type}`}
+                  </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText hidden={!fieldState.invalid} error={true}>
+                {fieldState.error?.message}
+              </FormHelperText>
+            </FormControl>
+          )}
+        />
+      </TableCell>
       <TableCell>{new Date().toLocaleDateString("hu-hu")}</TableCell>
       <TableCell>Not started yet</TableCell>
       <TableCell>Not finished yet</TableCell>
@@ -299,3 +329,5 @@ function AddNewJobRow(props: AddNewJobRowProps) {
     </TableRow>
   );
 }
+
+export default JobGrid;

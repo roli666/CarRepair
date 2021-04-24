@@ -1,4 +1,4 @@
-import { JobGrid } from "components/grids/JobGrid";
+import JobGrid from "components/grids/JobGrid";
 
 export function AvailableJobs() {
   return (

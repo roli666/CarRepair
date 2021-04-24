@@ -1,8 +1,8 @@
 import { Container } from "@material-ui/core";
-import React, { useEffect } from "react";
-import { CarGrid } from "./grids/CarGrid";
+import { useEffect } from "react";
+import CarGrid from "./components/grids/CarGrid";
 
-export function CarEditor() {
+function CarEditor() {
   //initialization
   useEffect(() => {
     (async () => {})();
@@ -15,3 +15,5 @@ export function CarEditor() {
     </Container>
   );
 }
+
+export default CarEditor;

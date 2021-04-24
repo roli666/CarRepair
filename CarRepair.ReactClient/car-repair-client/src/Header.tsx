@@ -1,4 +1,4 @@
-import { AppBar, Container, Grid, IconButton, ListItem, ListItemText, makeStyles, Menu, MenuItem, Toolbar } from "@material-ui/core";
+import { AppBar, Container, Grid, IconButton, ListItem, ListItemText, makeStyles, Menu, MenuItem, Toolbar, Typography, Box } from "@material-ui/core";
 import { Home } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -43,28 +43,33 @@ export function Header() {
         <Container>
           <Grid container direction={"row"} alignItems={"center"}>
             <Grid item xs>
-              <IconButton edge="start" color="inherit" aria-label="home">
-                <Link to="/" className={classes.linkText}>
-                  <Home fontSize="large" />
-                </Link>
-              </IconButton>
+              <Box display={"inline-flex"} alignItems={"center"}>
+                <IconButton edge="start" color="inherit" aria-label="home">
+                  <Link to="/" className={classes.linkText}>
+                    <Home fontSize="large" />
+                  </Link>
+                </IconButton>
+                {oidcUser && <Typography>{`Hello ${oidcUser.profile[ClaimTypes.surname]} ${oidcUser.profile[ClaimTypes.givenName]}!`}</Typography>}
+              </Box>
             </Grid>
             <Grid item component="nav" aria-labelledby="main navigation">
               <Grid container direction="row" alignItems="center" justify={"center"}>
-                <Grid item>
-                  <Link to={UsedRoutes.AvailableJobs} className={classes.linkText}>
-                    <ListItem button>
-                      <ListItemText primary={"Available Jobs"} className={classes.linkText} />
-                    </ListItem>
-                  </Link>
-                </Grid>
-                <Grid item>
-                  {adminMenuItemVisible && (
+                {oidcUser && (
+                  <Grid item>
+                    <Link to={UsedRoutes.AvailableJobs} className={classes.linkText}>
+                      <ListItem button>
+                        <ListItemText primary={"Available Jobs"} className={classes.linkText} />
+                      </ListItem>
+                    </Link>
+                  </Grid>
+                )}
+                {adminMenuItemVisible && (
+                  <Grid item>
                     <ListItem button onClick={handleClick}>
                       <ListItemText primary={"Admin"} className={classes.linkText} />
                     </ListItem>
-                  )}
-                </Grid>
+                  </Grid>
+                )}
                 {oidcUser ? (
                   <Grid item>
                     <ListItem button onClick={() => logout()}>

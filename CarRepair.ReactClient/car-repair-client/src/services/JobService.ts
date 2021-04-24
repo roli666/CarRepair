@@ -1,7 +1,7 @@
-import { ApiFetcher } from "../api/ApiFetcher";
+import ApiFetcher from "../api/ApiFetcher";
 import { Job, JobMessage } from "../api/models/Job";
 
-export class JobService {
+class JobService {
   public static async getAvailableJobs() {
     return await ApiFetcher.getData<Job[]>("/job");
   }
@@ -24,3 +24,5 @@ export class JobService {
     return await ApiFetcher.putData(`/job/finish/${jobId}`);
   }
 }
+
+export default JobService;

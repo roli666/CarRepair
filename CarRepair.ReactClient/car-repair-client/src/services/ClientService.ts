@@ -1,7 +1,7 @@
-import { ApiFetcher } from "../api/ApiFetcher";
+import ApiFetcher from "../api/ApiFetcher";
 import { Client } from "../api/models/Client";
 
-export class ClientService {
+class ClientService {
   public static async getAvailableClients() {
     return await ApiFetcher.getData<Client[]>("/client");
   }
@@ -18,3 +18,5 @@ export class ClientService {
     return await ApiFetcher.putData("/client", new URLSearchParams({ id: client.Id?.toString() ?? "" }), client);
   }
 }
+
+export default ClientService;

@@ -21,13 +21,13 @@ import { Client } from "api/models/Client";
 import { ValidationError } from "api/models/ValidationError";
 import { ConfirmationButton } from "components/ConfirmationButton";
 import { ValidationErrorElement } from "components/ErrorHandler";
-import React, { BaseSyntheticEvent, useEffect, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { UsedRoutes } from "Routes";
-import { ClientService } from "services/ClientService";
+import ClientService from "services/ClientService";
 import { Car, CarMessage } from "../../api/models/Car";
-import { CarService } from "../../services/CarService";
+import CarService from "services/CarService";
 
 class CarGridProps {
   readOnly?: boolean = false;
@@ -51,7 +51,7 @@ async function Initialize(): Promise<Car[]> {
   return result ?? [];
 }
 
-export function CarGrid(props: CarGridProps) {
+function CarGrid(props: CarGridProps) {
   const [cars, setCars] = useState<Car[]>([]);
   const [openAlert, setOpenAlert] = useState(false);
 
@@ -200,7 +200,6 @@ function AddNewCarRow(props: AddNewCarRowProps) {
               required={true}
               placeholder={"ABC-123"}
               onChange={(e) => field.onChange(e.target.value)}
-              defaultValue={field.value}
               value={field.value}
               label={"Licence plate"}
               helperText={fieldState.error?.message ?? ""}
@@ -225,7 +224,6 @@ function AddNewCarRow(props: AddNewCarRowProps) {
                 label={"Owner"}
                 error={fieldState.invalid}
                 onChange={(e) => field.onChange(e.target.value)}
-                defaultValue={""}
                 value={field.value}
               >
                 <MenuItem>
@@ -266,7 +264,6 @@ function AddNewCarRow(props: AddNewCarRowProps) {
               helperText={fieldState.error?.message ?? ""}
               error={fieldState.invalid}
               onChange={(e) => field.onChange(e.target.value)}
-              defaultValue={field.value}
               value={field.value}
             />
           )}
@@ -278,3 +275,5 @@ function AddNewCarRow(props: AddNewCarRowProps) {
     </TableRow>
   );
 }
+
+export default CarGrid;

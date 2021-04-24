@@ -1,7 +1,7 @@
-import { ApiFetcher } from "../api/ApiFetcher";
+import ApiFetcher from "../api/ApiFetcher";
 import { Car, CarMessage } from "../api/models/Car";
 
-export class CarService {
+class CarService {
   public static async getAvailableCars() {
     return await ApiFetcher.getData<Car[]>("/car");
   }
@@ -18,3 +18,5 @@ export class CarService {
     return await ApiFetcher.putData("/car", new URLSearchParams({ id: car.Id?.toString() ?? "" }), car);
   }
 }
+
+export default CarService;

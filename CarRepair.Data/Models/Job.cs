@@ -13,6 +13,14 @@ namespace CarRepair.Data.Models
         public int CarId { get; set; }
 
         [Required]
+        [MinLength(5)]
+        public string Description { get; set; }
+
+        public CarRepairUser AssignedTo { get; set; }
+
+        public string AssignedToId { get; set; }
+
+        [Required]
         public DateTime Registered { get; set; } = DateTime.Now;
 
         public DateTime? Started { get; set; }
@@ -20,10 +28,6 @@ namespace CarRepair.Data.Models
         public DateTime? Finished { get; set; }
 
         public JobStatus Status { get; set; } = JobStatus.Awaiting;
-
-        [Required]
-        [MinLength(5)]
-        public string Description { get; set; }
     }
 
     public enum JobStatus

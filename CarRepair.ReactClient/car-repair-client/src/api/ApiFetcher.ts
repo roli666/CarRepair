@@ -1,7 +1,7 @@
 import { User } from "oidc-client";
 import configuration from "../static/configuration.json";
 
-export class ApiFetcher {
+class ApiFetcher {
   private static readonly baseURL = `${configuration.APIProtocol}://${configuration.APIHostname}:${configuration.APIPort}`;
   private static getToken(): string | undefined {
     const user = sessionStorage.getItem(`oidc.user:${this.baseURL}:${configuration.OIDC_ClientId}`);
@@ -120,3 +120,4 @@ export class ApiFetcher {
     return response;
   }
 }
+export default ApiFetcher;

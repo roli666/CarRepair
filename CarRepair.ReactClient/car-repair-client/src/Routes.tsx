@@ -1,9 +1,8 @@
-import { CarEditor } from "components/CarEditor";
-import { ClientEditor } from "components/ClientEditor";
-import { JobEditor } from "components/JobEditor";
+import CarEditor from "./CarEditor";
+import ClientEditor from "./ClientEditor";
+import JobEditor from "./JobEditor";
 import { Home } from "Home";
 import { AvailableJobs } from "AvailableJobs";
-import React from "react";
 import { Redirect, Route } from "react-router-dom";
 import { SignIn } from "SignIn";
 import { SignOut } from "SignOut";

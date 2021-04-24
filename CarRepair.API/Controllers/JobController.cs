@@ -2,6 +2,7 @@
 using CarRepair.Data;
 using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,11 +17,13 @@ namespace CarRepair.API.Controllers
     {
         private readonly ILogger<JobController> _logger;
         private readonly CarRepairContext _db;
+        private readonly UserManager<CarRepairUser> _userManager;
 
-        public JobController(ILogger<JobController> logger, CarRepairContext db)
+        public JobController(ILogger<JobController> logger, CarRepairContext db, UserManager<CarRepairUser> userManager)
         {
             _logger = logger;
             _db = db;
+            _userManager = userManager;
         }
 
         // GET: <JobController>
@@ -32,6 +35,7 @@ namespace CarRepair.API.Controllers
                 _logger.LogDebug("Sending jobs for user:{0}", User);
 
                 var jobs = await _db.Jobs
+                    .Include(j => j.AssignedTo)
                     .Include(j => j.Car)
                     .ThenInclude(car => car.Owner)
                     .ThenInclude(c => c.ContactInfo)
@@ -50,6 +54,7 @@ namespace CarRepair.API.Controllers
                 _logger.LogDebug("Sending job:{1} for user:{0}", User, id);
 
                 var job = await _db.Jobs
+                    .Include(j => j.AssignedTo)
                     .Include(j => j.Car)
                     .ThenInclude(car => car.Owner)
                     .ThenInclude(c => c.ContactInfo)
@@ -69,6 +74,7 @@ namespace CarRepair.API.Controllers
                 _logger.LogDebug("Starting job:{1} for user:{0}", User, id);
 
                 var job = await _db.Jobs
+                    .Include(j => j.AssignedTo)
                     .Include(j => j.Car)
                     .ThenInclude(car => car.Owner)
                     .ThenInclude(c => c.ContactInfo)
@@ -80,6 +86,11 @@ namespace CarRepair.API.Controllers
                 {
                     job.Started = DateTime.Now;
                     job.Status = JobStatus.InProgress;
+                    if(job.AssignedTo == null)
+                    {
+                        var user = await _userManager.GetUserAsync(User);
+                        job.AssignedTo = user;
+                    }
                     await _db.SaveChangesAsync();
                     return Ok(job);
                 }
@@ -98,6 +109,7 @@ namespace CarRepair.API.Controllers
                 _logger.LogDebug("Finishing job:{1} for user:{0}", User, id);
 
                 var job = await _db.Jobs
+                    .Include(j => j.AssignedTo)
                     .Include(j => j.Car)
                     .ThenInclude(car => car.Owner)
                     .ThenInclude(c => c.ContactInfo)
@@ -129,12 +141,14 @@ namespace CarRepair.API.Controllers
                 var job = new Job
                 {
                     CarId = value.CarId,
-                    Description = value.Description
+                    Description = value.Description,
+                    AssignedToId = value.AssignedToId
                 };
 
                 await _db.Jobs.AddAsync(job);
                 await _db.SaveChangesAsync();
                 await _db.Entry(job).Reference(j => j.Car).LoadAsync();
+                await _db.Entry(job).Reference(j => j.AssignedTo).LoadAsync();
 
                 return Ok(job);
             }
