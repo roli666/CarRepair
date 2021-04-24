@@ -17,9 +17,7 @@ namespace CarRepair.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfiguration(new RoleConfiguration());
             builder.ApplyConfiguration(new CarRepairUserConfiguration());
-            builder.ApplyConfiguration(new UserRoleConfiguration());
         }
 
         public DbSet<Car> Cars { get; set; }

@@ -86,7 +86,7 @@ namespace CarRepair.API.Controllers
                 {
                     job.Started = DateTime.Now;
                     job.Status = JobStatus.InProgress;
-                    if(job.AssignedTo == null)
+                    if (job.AssignedTo == null)
                     {
                         var user = await _userManager.GetUserAsync(User);
                         job.AssignedTo = user;
