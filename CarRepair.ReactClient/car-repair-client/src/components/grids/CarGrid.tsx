@@ -122,7 +122,7 @@ function CarGridBody(props: CarGridBodyProps) {
         <TableRow key={row.Id}>
           <TableCell>{row.Id}</TableCell>
           <TableCell>{row.LicencePlate}</TableCell>
-          <TableCell>{row.Owner.Lastname + row.Owner.Firstname}</TableCell>
+          <TableCell>{row.Owner.Lastname + " " + row.Owner.Firstname}</TableCell>
           <TableCell>{row.Type}</TableCell>
           <TableCell>
             <ConfirmationButton
