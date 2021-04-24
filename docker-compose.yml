@@ -21,6 +21,10 @@ services:
      - 1433:1433
     networks:
      - car-repair
+    volumes:
+    - mssqlData:/var/opt/mssql
 networks:
   car-repair:
     driver: bridge
+volumes:
+  mssqlData:

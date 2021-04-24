@@ -1,0 +1,14 @@
+version: '3.0'
+services:
+  car-repair-client:
+    container_name: client
+    build:
+      context: ./car-repair-client
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    networks: 
+      - car-repair-client
+networks:
+    car-repair-client:
+        driver: bridge
