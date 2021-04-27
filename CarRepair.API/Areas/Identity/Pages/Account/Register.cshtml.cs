@@ -62,11 +62,11 @@ namespace CarRepair.API.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "The Firstname field is required.")]
             [Display(Name = "Firstname")]
             public string Firstname { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "The Lastname field is required.")]
             [Display(Name = "Lastname")]
             public string Lastname { get; set; }
         }

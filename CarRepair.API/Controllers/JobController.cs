@@ -81,6 +81,13 @@ namespace CarRepair.API.Controllers
                     .FirstOrDefaultAsync(job => job.Id == id);
 
                 var jobToUpdate = _db.Jobs.Attach(job);
+                var user = await _userManager.GetUserAsync(User);
+
+                if(!string.IsNullOrEmpty(job.AssignedToId))
+                {
+                    if(user.Id != job.AssignedToId)
+                        return Forbid();
+                }
 
                 if (job.Status == JobStatus.Awaiting)
                 {
@@ -88,7 +95,6 @@ namespace CarRepair.API.Controllers
                     job.Status = JobStatus.InProgress;
                     if (job.AssignedTo == null)
                     {
-                        var user = await _userManager.GetUserAsync(User);
                         job.AssignedTo = user;
                         job.AssignedToId = user.Id;
                     }
@@ -116,6 +122,13 @@ namespace CarRepair.API.Controllers
                     .FirstOrDefaultAsync(job => job.Id == id);
 
                 var jobToUpdate = _db.Jobs.Attach(job);
+                var user = await _userManager.GetUserAsync(User);
+
+                if (!string.IsNullOrEmpty(job.AssignedToId))
+                {
+                    if (user.Id != job.AssignedToId)
+                        return Forbid();
+                }
 
                 if (job.Status == JobStatus.InProgress)
                 {
