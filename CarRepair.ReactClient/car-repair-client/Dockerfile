@@ -1,17 +1,12 @@
-FROM node:14.16.1-alpine3.13
+FROM node:12.18-alpine
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
-ENV PATH /app/node_modules/.bin:$PATH
+ENV NODE_ENV=production
 
-# install app dependencies
-COPY package.json .
-COPY package-lock.json .
-RUN npm install
-RUN npm install react-scripts -g
+COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+RUN npm install --production --silent && mv node_modules ../
 
-# add app
 COPY . .
-
-# start app
+EXPOSE 3000
 CMD ["npm", "start"]
