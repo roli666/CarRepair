@@ -1,4 +1,5 @@
-﻿using CarRepair.Data;
+﻿using CarRepair.Core.Authorization;
+using CarRepair.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ namespace CarRepair.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize(Policy = "RequireAdmin")]
+    [Authorize(Policy = Policies.RequireAdmin)]
     public class CarRepairUserController : ControllerBase
     {
         private readonly ILogger<CarController> _logger;

@@ -1,4 +1,5 @@
-﻿using CarRepair.Core.Models;
+﻿using CarRepair.Core.Authorization;
+using CarRepair.Core.Models;
 using CarRepair.Data;
 using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,6 +14,7 @@ namespace CarRepair.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class JobController : ControllerBase
     {
         private readonly ILogger<JobController> _logger;
@@ -66,7 +68,6 @@ namespace CarRepair.API.Controllers
 
         // PUT <JobController>/start/5
         [HttpPut("start/{id}")]
-        [Authorize]
         public async Task<IActionResult> StartJob(int id)
         {
             using (_db)
@@ -107,7 +108,6 @@ namespace CarRepair.API.Controllers
 
         // PUT <JobController>/start/5
         [HttpPut("finish/{id}")]
-        [Authorize]
         public async Task<IActionResult> FinishJob(int id)
         {
             using (_db)
@@ -144,7 +144,7 @@ namespace CarRepair.API.Controllers
 
         // POST <JobController>
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = Policies.RequireAdmin)]
         public async Task<IActionResult> Post([FromBody] JobMessage value)
         {
             using (_db)
@@ -169,6 +169,7 @@ namespace CarRepair.API.Controllers
 
         // PUT <JobController>/5
         [HttpPut("{id}")]
+        [Authorize(Policy = Policies.RequireAdmin)]
         public async Task<IActionResult> Put(int id, [FromBody] Job value)
         {
             using (_db)
@@ -192,6 +193,7 @@ namespace CarRepair.API.Controllers
 
         // DELETE <JobController>/5
         [HttpDelete("{id}")]
+        [Authorize(Policy = Policies.RequireAdmin)]
         public async Task<IActionResult> Delete(int id)
         {
             using (_db)
