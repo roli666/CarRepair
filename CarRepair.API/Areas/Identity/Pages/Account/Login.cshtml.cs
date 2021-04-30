@@ -1,4 +1,5 @@
-﻿using CarRepair.Data.Models;
+﻿using CarRepair.Core.Authorization;
+using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -89,7 +90,7 @@ namespace CarRepair.API.Areas.Identity.Pages.Account
                     if (user.IsAdmin)
                     {
                         if (!userClaims.Select(c => c.Type).Any(type => type == ClaimTypes.Role))
-                            await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, "Admin"));
+                            await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, Roles.Admin));
                     }
                     if (!userClaims.Select(c => c.Type).Any(type => type == ClaimTypes.GivenName))
                         await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.GivenName, user.Firstname));

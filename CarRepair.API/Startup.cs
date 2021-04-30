@@ -1,4 +1,5 @@
 using CarRepair.API.Hubs;
+using CarRepair.Core.Authorization;
 using CarRepair.Data;
 using CarRepair.Data.Models;
 using Microsoft.AspNetCore.Authentication;
@@ -15,6 +16,7 @@ namespace CarRepair.API
 {
     public class Startup
     {
+        private const string localHostPolicy = "localhostPolicy";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,9 +38,9 @@ namespace CarRepair.API
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireAdmin", policy =>
+                options.AddPolicy(Policies.RequireAdmin, policy =>
                 {
-                    policy.RequireClaim(ClaimTypes.Role, "Admin");
+                    policy.RequireClaim(ClaimTypes.Role, Roles.Admin);
                 });
             });
 
@@ -53,7 +55,7 @@ namespace CarRepair.API
 
             services.AddCors(options =>
                 {
-                    options.AddPolicy("localhostPolicy", builder =>
+                    options.AddPolicy(localHostPolicy, builder =>
                         builder.WithOrigins("http://localhost:3000", "https://localhost:3000")
                                .AllowAnyHeader()
                                .AllowAnyMethod()
@@ -78,7 +80,7 @@ namespace CarRepair.API
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseCors("localhostPolicy");
+            app.UseCors(localHostPolicy);
 
             app.UseAuthentication();
             app.UseIdentityServer();
