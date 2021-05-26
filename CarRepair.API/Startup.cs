@@ -82,7 +82,6 @@ namespace CarRepair.API
             app.UseRouting();
             app.UseCors(localHostPolicy);
 
-            app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
 
